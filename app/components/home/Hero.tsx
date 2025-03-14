@@ -10,7 +10,12 @@ export default function Hero() {
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    setIsLoaded(true)
+    // Small delay to ensure component is mounted
+    const timer = setTimeout(() => {
+      setIsLoaded(true)
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, [])
 
   const toggleVideo = () => {
@@ -24,13 +29,13 @@ export default function Hero() {
     "of This"
   ]
 
-  // Animation variants for the heading with more dramatic effects
+  // Animation variants for the heading - Simplified for better reliability
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.4,
+        staggerChildren: 0.2,
       },
     },
   }
@@ -42,30 +47,8 @@ export default function Hero() {
       y: 0,
       transition: {
         type: "spring",
-        damping: 10,
-        stiffness: 150,
-        staggerChildren: 0.1,
-        delayChildren: 0.15,
-      },
-    },
-  }
-
-  const characterVariants = {
-    hidden: { 
-      opacity: 0,
-      y: 40,
-      rotate: -12,
-      scale: 0.8,
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      rotate: 0,
-      scale: 1,
-      transition: {
-        type: "spring",
-        damping: 8,
-        stiffness: 150,
+        damping: 12,
+        stiffness: 100,
       },
     },
   }
@@ -97,6 +80,7 @@ export default function Hero() {
             transition={{ duration: 0.8 }}
             className="text-center lg:text-left"
           >
+            {/* Main heading with more reliable animation */}
             <motion.div 
               variants={containerVariants}
               initial="hidden"
@@ -107,7 +91,7 @@ export default function Hero() {
                 <motion.div
                   key={lineIndex}
                   variants={lineVariants}
-                  className="overflow-hidden"
+                  className="overflow-hidden mb-2"
                 >
                   <div 
                     className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight leading-tight md:leading-snug"
@@ -119,26 +103,16 @@ export default function Hero() {
                       textShadow: "0 0 20px rgba(255,255,255,0.2)"
                     }}
                   >
-                    {line.split("").map((char, charIndex) => (
-                      <motion.span
-                        key={charIndex}
-                        variants={characterVariants}
-                        className="inline-block"
-                        style={{ 
-                          marginRight: char === " " ? "0.5rem" : "0.02em",
-                        }}
-                      >
-                        {char}
-                      </motion.span>
-                    ))}
+                    {line}
                   </div>
                 </motion.div>
               ))}
             </motion.div>
+            
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 20 }}
-              transition={{ delay: 2.5, duration: 0.8 }}
+              transition={{ delay: 1.0, duration: 0.8 }}
               className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto lg:mx-0"
               style={{ 
                 fontFamily: "'Montserrat', sans-serif",
@@ -152,7 +126,7 @@ export default function Hero() {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 20 }}
-              transition={{ delay: 2.8, duration: 0.8 }}
+              transition={{ delay: 1.3, duration: 0.8 }}
               className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8"
             >
               <Link
@@ -173,7 +147,7 @@ export default function Hero() {
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 20 }}
-              transition={{ delay: 3.1, duration: 0.8 }}
+              transition={{ delay: 1.6, duration: 0.8 }}
               className="flex items-center justify-center lg:justify-start gap-6"
             >
               <Link href="https://instagram.com" className="text-white hover:text-blue-400 transition-colors hover:scale-110 transform duration-200">
@@ -192,7 +166,7 @@ export default function Hero() {
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: isLoaded ? 1 : 0, scale: isLoaded ? 1 : 0.8 }}
-            transition={{ delay: 2.0, duration: 0.8 }}
+            transition={{ delay: 1.0, duration: 0.8 }}
             className="relative aspect-video rounded-2xl overflow-hidden cursor-pointer group shadow-2xl shadow-blue-900/20 border border-white/10"
             onClick={toggleVideo}
           >
@@ -210,7 +184,7 @@ export default function Hero() {
             </motion.div>
             <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent z-10">
               <p className="text-white text-lg font-semibold" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                Watch Our Latest Adventure
+                What we do
               </p>
             </div>
           </motion.div>

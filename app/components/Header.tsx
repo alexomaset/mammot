@@ -55,14 +55,6 @@ export default function Header() {
               Services
             </Link>
             <Link 
-              href="/case-studies" 
-              className={`font-medium text-lg hover:text-blue-400 transition-colors ${
-                isScrolled ? 'text-gray-800' : 'text-white'
-              }`}
-            >
-              Case Studies
-            </Link>
-            <Link 
               href="/about" 
               className={`font-medium text-lg hover:text-blue-400 transition-colors ${
                 isScrolled ? 'text-gray-800' : 'text-white'

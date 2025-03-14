@@ -11,7 +11,7 @@ export default function Footer() {
           <div className="space-y-4">
             <div className="relative h-12 w-48">
               <Image
-                src="/images/logo.svg"
+                src="/logo.svg"
                 alt="MAMOT Digital Marketing"
                 fill
                 className="object-contain"
@@ -73,18 +73,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/case-studies" className="text-gray-400 hover:text-white transition-colors">
-                  Case Studies
-                </Link>
-              </li>
-              <li>
                 <Link href="/blog" className="text-gray-400 hover:text-white transition-colors">
                   Blog
-                </Link>
-              </li>
-              <li>
-                <Link href="/careers" className="text-gray-400 hover:text-white transition-colors">
-                  Careers
                 </Link>
               </li>
             </ul>
@@ -101,7 +91,7 @@ export default function Footer() {
               </li>
               <li>
                 <a href="tel:+15551234567" className="text-gray-400 hover:text-white transition-colors">
-                  +1 (555) 123-4567
+                  +254 (555) 123-4567
                 </a>
               </li>
               <li>
