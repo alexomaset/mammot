@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { FaPlay, FaInstagram, FaYoutube, FaTiktok } from 'react-icons/fa'
+import Image from 'next/image'
 
 export default function Hero() {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
@@ -23,11 +24,6 @@ export default function Hero() {
   }
 
   // Split text into lines for better visual hierarchy
-  const textLines = [
-    "Memories",
-    "Are Made",
-    "of This"
-  ]
 
   // Animation variants for the heading - Simplified for better reliability
   const containerVariants = {
@@ -66,7 +62,7 @@ export default function Hero() {
             isVideoPlaying ? 'opacity-100' : 'opacity-60'
           }`}
         >
-          <source src="/VIDEO-2025-03-12-14-39-56.mp4" type="video/mp4" />
+          <source src="/mamot.MOV" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" /> {/* Enhanced gradient overlay */}
       </div>
@@ -87,26 +83,21 @@ export default function Hero() {
               animate={isLoaded ? "visible" : "hidden"}
               className="mb-8 md:mb-10"
             >
-              {textLines.map((line, lineIndex) => (
-                <motion.div
-                  key={lineIndex}
-                  variants={lineVariants}
-                  className="overflow-hidden mb-2"
-                >
-                  <div 
-                    className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight leading-tight md:leading-snug"
-                    style={{ 
-                      fontFamily: "'Playfair Display', serif",
-                      background: "linear-gradient(to right, #ffffff, #a0e4ff)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      textShadow: "0 0 20px rgba(255,255,255,0.2)"
-                    }}
-                  >
-                    {line}
-                  </div>
-                </motion.div>
-              ))}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.8 }}
+                className="relative w-full max-w-2xl mx-auto lg:mx-0"
+              >
+                <Image
+                  src="/logo.png"
+                  alt="Mamot Logo"
+                  width={450}
+                  height={100}
+                  className="w-60 h-200"
+                  priority
+                />
+              </motion.div>
             </motion.div>
             
             <motion.p 
@@ -120,8 +111,7 @@ export default function Hero() {
                 textShadow: "0 2px 4px rgba(0,0,0,0.3)"
               }}
             >
-              Discover inspiring stories, authentic experiences, and lifestyle content that will transform your daily life. 
-              Join our community of adventurers and dreamers.
+             Filling the gap in unforgattable digital storytelling. Turning moments into lasting memories.
             </motion.p>
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
@@ -153,9 +143,6 @@ export default function Hero() {
               <Link href="https://instagram.com" className="text-white hover:text-blue-400 transition-colors hover:scale-110 transform duration-200">
                 <FaInstagram className="w-6 h-6" />
               </Link>
-              <Link href="https://youtube.com" className="text-white hover:text-blue-400 transition-colors hover:scale-110 transform duration-200">
-                <FaYoutube className="w-6 h-6" />
-              </Link>
               <Link href="https://tiktok.com" className="text-white hover:text-blue-400 transition-colors hover:scale-110 transform duration-200">
                 <FaTiktok className="w-6 h-6" />
               </Link>
@@ -170,23 +157,48 @@ export default function Hero() {
             className="relative aspect-video rounded-2xl overflow-hidden cursor-pointer group shadow-2xl shadow-blue-900/20 border border-white/10"
             onClick={toggleVideo}
           >
+            {/* Video Thumbnail */}
             <div className="absolute inset-0 bg-gradient-to-tr from-blue-900/30 to-transparent z-10" />
+            <div 
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: 'url("/video-thumbnail.jpg")' }}
+            />
+            
+            {/* Play Button Overlay */}
             <motion.div 
-              className="absolute inset-0 flex items-center justify-center z-20"
-              whileHover={{ scale: 1.1 }}
+              className="absolute inset-0 flex items-center justify-center z-20 bg-black/20 group-hover:bg-black/40 transition-all duration-300"
+              whileHover={{ scale: 1.05 }}
             >
               <motion.div
                 whileHover={{ scale: 1.1 }}
-                className="bg-blue-600 rounded-full p-6 text-white shadow-lg shadow-blue-500/40"
+                className="bg-blue-600 rounded-full p-6 text-white shadow-lg shadow-blue-500/40 group-hover:bg-blue-500 transition-colors duration-300"
               >
                 <FaPlay className="w-8 h-8" />
               </motion.div>
             </motion.div>
-            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent z-10">
-              <p className="text-white text-lg font-semibold" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                What we do
-              </p>
+
+            {/* Content Overlay */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-10">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-white text-xl font-semibold mb-1" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                    What We Do
+                  </h3>
+                  <p className="text-gray-200 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    Click to watch our story
+                  </p>
+                </div>
+                <motion.div 
+                  className="bg-white/10 rounded-full p-2 backdrop-blur-sm"
+                  whileHover={{ scale: 1.1 }}
+                >
+                  <FaPlay className="w-4 h-4 text-white" />
+                </motion.div>
+              </div>
             </div>
+
+            {/* Hover Effect Border */}
+            <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-500/50 transition-colors duration-300 rounded-2xl" />
           </motion.div>
         </div>
       </div>
@@ -214,7 +226,7 @@ export default function Hero() {
                 controls
                 className="w-full rounded-lg shadow-2xl"
               >
-                <source src="/VIDEO-2025-03-12-14-39-56.mp4" type="video/mp4" />
+                <source src="/mamot.MOV" type="video/mp4" />
               </video>
               <button
                 onClick={(e) => {
