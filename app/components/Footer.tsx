@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { FaFacebook, FaTwitter, FaLinkedin, FaInstagram } from 'react-icons/fa'
+import { FaFacebook, FaTwitter, FaLinkedin, FaInstagram, FaTiktok } from 'react-icons/fa'
 
 export default function Footer() {
   return (
@@ -25,10 +25,7 @@ export default function Footer() {
                 <FaFacebook size={20} />
               </a>
               <a href="#" className="text-earth-sand hover:text-earth-terracotta transition-colors">
-                <FaTwitter size={20} />
-              </a>
-              <a href="#" className="text-earth-sand hover:text-earth-terracotta transition-colors">
-                <FaLinkedin size={20} />
+                <FaTiktok size={20} />
               </a>
               <a href="#" className="text-earth-sand hover:text-earth-terracotta transition-colors">
                 <FaInstagram size={20} />
