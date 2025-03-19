@@ -34,7 +34,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${playfair.variable} ${lato.variable} ${cormorant.variable}`}>
-      <body className="min-h-screen flex flex-col bg-white">
+      <body className="min-h-screen flex flex-col bg-earth-light">
         <Header />
         <main className="flex-grow">{children}</main>
         <Footer />

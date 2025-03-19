@@ -20,8 +20,8 @@ export default function Header() {
   return (
     <header className={`fixed w-full z-50 transition-all duration-500 ${
       isScrolled 
-        ? 'bg-white shadow-lg' 
-        : 'bg-gradient-to-b from-black/80 via-black/50 to-transparent backdrop-blur-sm'
+        ? 'bg-earth-light shadow-lg' 
+        : 'bg-gradient-to-b from-earth-bark/90 via-earth-brown/60 to-transparent backdrop-blur-sm'
     }`}>
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-28">
@@ -40,40 +40,40 @@ export default function Header() {
           <nav className="hidden md:flex items-center space-x-8">
             <Link 
               href="/" 
-              className={`font-medium text-lg hover:text-blue-400 transition-colors ${
-                isScrolled ? 'text-gray-800' : 'text-white'
+              className={`font-medium text-lg hover:text-earth-terracotta transition-colors ${
+                isScrolled ? 'text-earth-brown' : 'text-earth-light'
               }`}
             >
               Home
             </Link>
             <Link 
               href="/services" 
-              className={`font-medium text-lg hover:text-blue-400 transition-colors ${
-                isScrolled ? 'text-gray-800' : 'text-white'
+              className={`font-medium text-lg hover:text-earth-terracotta transition-colors ${
+                isScrolled ? 'text-earth-brown' : 'text-earth-light'
               }`}
             >
               Services
             </Link>
             <Link 
               href="/about" 
-              className={`font-medium text-lg hover:text-blue-400 transition-colors ${
-                isScrolled ? 'text-gray-800' : 'text-white'
+              className={`font-medium text-lg hover:text-earth-terracotta transition-colors ${
+                isScrolled ? 'text-earth-brown' : 'text-earth-light'
               }`}
             >
               About
             </Link>
             <Link 
               href="/contact" 
-              className={`font-medium text-lg hover:text-blue-400 transition-colors ${
-                isScrolled ? 'text-gray-800' : 'text-white'
+              className={`font-medium text-lg hover:text-earth-terracotta transition-colors ${
+                isScrolled ? 'text-earth-brown' : 'text-earth-light'
               }`}
             >
               Contact
             </Link>
             <Link
               href="/contact"
-              className={`bg-blue-600 text-white px-8 py-3 rounded-full font-medium text-lg hover:bg-blue-700 transition-all hover:scale-105 shadow-lg ${
-                isScrolled ? 'shadow-blue-600/30' : 'shadow-blue-500/50'
+              className={`bg-earth-terracotta text-earth-light px-8 py-3 rounded-full font-medium text-lg hover:bg-earth-rust transition-all hover:scale-105 shadow-lg ${
+                isScrolled ? 'shadow-earth-terracotta/30' : 'shadow-earth-rust/50'
               }`}
             >
               Get Started
@@ -82,7 +82,7 @@ export default function Header() {
 
           {/* Mobile Menu Button */}
           <button
-            className={`md:hidden ${isScrolled ? 'text-gray-800' : 'text-white'}`}
+            className={`md:hidden ${isScrolled ? 'text-earth-brown' : 'text-earth-light'}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             <svg
@@ -107,40 +107,40 @@ export default function Header() {
         <motion.div
           initial={false}
           animate={{ height: isMobileMenuOpen ? 'auto' : 0 }}
-          className="md:hidden overflow-hidden bg-white/95 backdrop-blur-sm"
+          className="md:hidden overflow-hidden bg-earth-light/95 backdrop-blur-sm"
         >
           <nav className="py-4 space-y-4">
             <Link
               href="/"
-              className="block text-gray-800 hover:text-blue-600 transition-colors text-lg font-medium px-4"
+              className="block text-earth-clay hover:text-earth-terracotta transition-colors text-lg font-medium px-4"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Home
             </Link>
             <Link
               href="/services"
-              className="block text-gray-800 hover:text-blue-600 transition-colors text-lg font-medium px-4"
+              className="block text-earth-clay hover:text-earth-terracotta transition-colors text-lg font-medium px-4"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Services
             </Link>
             <Link
               href="/case-studies"
-              className="block text-gray-800 hover:text-blue-600 transition-colors text-lg font-medium px-4"
+              className="block text-earth-clay hover:text-earth-terracotta transition-colors text-lg font-medium px-4"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Case Studies
             </Link>
             <Link
               href="/about"
-              className="block text-gray-800 hover:text-blue-600 transition-colors text-lg font-medium px-4"
+              className="block text-earth-clay hover:text-earth-terracotta transition-colors text-lg font-medium px-4"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               About
             </Link>
             <Link
               href="/contact"
-              className="block text-gray-800 hover:text-blue-600 transition-colors text-lg font-medium px-4"
+              className="block text-earth-clay hover:text-earth-terracotta transition-colors text-lg font-medium px-4"
               onClick={() => setIsMobileMenuOpen(false)}
             >
               Contact
@@ -148,7 +148,7 @@ export default function Header() {
             <div className="px-4 pb-2">
               <Link
                 href="/contact"
-                className="block bg-blue-600 text-white px-8 py-3 rounded-full font-medium text-lg hover:bg-blue-700 transition-all text-center shadow-lg shadow-blue-600/30"
+                className="block bg-earth-terracotta text-earth-light px-8 py-3 rounded-full font-medium text-lg hover:bg-earth-rust transition-all text-center shadow-lg shadow-earth-terracotta/30"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Get Started

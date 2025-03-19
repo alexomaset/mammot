@@ -36,13 +36,13 @@ export default function Navigation({ mobile, setMobileMenuOpen }: NavigationProp
             onClick={handleClick}
             className={`relative font-medium text-base transition duration-200 ${
               isActive 
-                ? "text-blue-600"
-                : "text-gray-600 hover:text-blue-600"
+                ? "text-earth-brown"
+                : "text-earth-clay hover:text-earth-terracotta"
             }`}
           >
             {item.name}
             {isActive && (
-              <span className="absolute -bottom-1 left-0 h-0.5 w-full bg-blue-600" />
+              <span className="absolute -bottom-1 left-0 h-0.5 w-full bg-earth-terracotta" />
             )}
           </Link>
         )

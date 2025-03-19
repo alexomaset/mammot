@@ -60,7 +60,7 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="py-20 bg-gray-50">
+    <section id="contact" className="py-20 bg-earth-light">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <motion.div 
@@ -70,7 +70,7 @@ export default function Contact() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Get in Touch</h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          <p className="text-earth-clay text-lg max-w-2xl mx-auto">
             Have a project in mind? Let's create something amazing together.
           </p>
         </motion.div>
@@ -83,7 +83,7 @@ export default function Contact() {
             viewport={{ once: true }}
             className="space-y-8"
           >
-            <div className="bg-white rounded-2xl p-8 shadow-lg">
+            <div className="bg-earth-beige rounded-2xl p-8 shadow-lg">
               <h3 className="text-2xl font-bold mb-6">Contact Information</h3>
               <div className="space-y-6">
                 {contactInfo.map((item, index) => (
@@ -95,11 +95,11 @@ export default function Contact() {
                     className="flex items-center space-x-4 group"
                     whileHover={{ x: 8 }}
                   >
-                    <div className="p-3 bg-blue-100 text-blue-600 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                    <div className="p-3 bg-earth-sand text-earth-brown rounded-lg group-hover:bg-earth-terracotta group-hover:text-earth-light transition-colors">
                       {item.icon}
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">{item.title}</p>
+                      <p className="text-sm text-earth-clay">{item.title}</p>
                       <p className="font-medium">{item.content}</p>
                     </div>
                   </motion.a>
@@ -115,7 +115,7 @@ export default function Contact() {
                       href={social.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-3 bg-gray-100 text-gray-600 rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
+                      className="p-3 bg-earth-sand text-earth-brown rounded-lg hover:bg-earth-terracotta hover:text-earth-light transition-colors"
                       whileHover={{ y: -4 }}
                     >
                       {social.icon}
@@ -131,12 +131,12 @@ export default function Contact() {
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="bg-white rounded-2xl p-8 shadow-lg"
+            className="bg-earth-beige rounded-2xl p-8 shadow-lg"
           >
             <h3 className="text-2xl font-bold mb-6">Send a Message</h3>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="name" className="block text-sm font-medium text-earth-clay mb-1">
                   Your Name
                 </label>
                 <input
@@ -146,13 +146,13 @@ export default function Contact() {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg border border-earth-sand focus:ring-2 focus:ring-earth-terracotta focus:border-transparent"
                   placeholder="John Doe"
                 />
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="email" className="block text-sm font-medium text-earth-clay mb-1">
                   Email Address
                 </label>
                 <input
@@ -162,13 +162,13 @@ export default function Contact() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg border border-earth-sand focus:ring-2 focus:ring-earth-terracotta focus:border-transparent"
                   placeholder="john@example.com"
                 />
               </div>
 
               <div>
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="subject" className="block text-sm font-medium text-earth-clay mb-1">
                   Subject
                 </label>
                 <input
@@ -178,13 +178,13 @@ export default function Contact() {
                   value={formData.subject}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                  className="w-full px-4 py-3 rounded-lg border border-earth-sand focus:ring-2 focus:ring-earth-terracotta focus:border-transparent"
                   placeholder="Project Inquiry"
                 />
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="message" className="block text-sm font-medium text-earth-clay mb-1">
                   Message
                 </label>
                 <textarea
@@ -194,7 +194,7 @@ export default function Contact() {
                   onChange={handleChange}
                   required
                   rows={4}
-                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-600 focus:border-transparent resize-none"
+                  className="w-full px-4 py-3 rounded-lg border border-earth-sand focus:ring-2 focus:ring-earth-terracotta focus:border-transparent resize-none"
                   placeholder="Tell us about your project..."
                 />
               </div>
@@ -202,10 +202,10 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={formStatus === 'submitting'}
-                className={`w-full py-3 px-6 rounded-lg text-white font-medium transition-all
+                className={`w-full py-3 px-6 rounded-lg text-earth-light font-medium transition-all
                   ${formStatus === 'submitting' 
-                    ? 'bg-gray-400 cursor-not-allowed' 
-                    : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/30'
+                    ? 'bg-earth-slate cursor-not-allowed' 
+                    : 'bg-earth-terracotta hover:bg-earth-rust hover:shadow-lg hover:shadow-earth-terracotta/30'
                   }`}
               >
                 {formStatus === 'submitting' ? 'Sending...' : 'Send Message'}
@@ -215,7 +215,7 @@ export default function Contact() {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="p-4 bg-green-100 text-green-700 rounded-lg text-center"
+                  className="p-4 bg-earth-moss/20 text-earth-moss rounded-lg text-center"
                 >
                   Thank you! Your message has been sent successfully.
                 </motion.div>
@@ -225,7 +225,7 @@ export default function Contact() {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="p-4 bg-red-100 text-red-700 rounded-lg text-center"
+                  className="p-4 bg-earth-rust/20 text-earth-rust rounded-lg text-center"
                 >
                   Oops! Something went wrong. Please try again.
                 </motion.div>

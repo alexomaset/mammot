@@ -103,8 +103,8 @@ export default function Portfolio() {
               onClick={() => setSelectedCategory(category)}
               className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
                 selectedCategory === category
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
-                  : 'bg-white text-gray-600 hover:bg-blue-50'
+                  ? 'bg-earth-terracotta text-earth-light shadow-lg shadow-earth-terracotta/30'
+                  : 'bg-earth-light text-earth-clay hover:bg-earth-beige'
               }`}
             >
               {category.charAt(0).toUpperCase() + category.slice(1)}
@@ -124,12 +124,12 @@ export default function Portfolio() {
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.2 }}
               layout
-              className="group relative rounded-2xl overflow-hidden shadow-xl bg-white hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+              className="group relative rounded-2xl overflow-hidden shadow-xl bg-earth-light hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
             >
               {/* Video Container */}
               <div className="relative aspect-video cursor-pointer" onClick={() => setActiveVideo(item.id)}>
                 {/* Thumbnail */}
-                <div className="absolute inset-0 bg-gray-900 transform transition-transform duration-300 group-hover:scale-105">
+                <div className="absolute inset-0 bg-earth-soil transform transition-transform duration-300 group-hover:scale-105">
                   <div 
                     className="w-full h-full bg-cover bg-center"
                     style={{ backgroundImage: `url(${item.thumbnail})` }}
@@ -137,11 +137,11 @@ export default function Portfolio() {
                 </div>
                 
                 {/* Play Button Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/50 transition-all">
+                <div className="absolute inset-0 flex items-center justify-center bg-earth-bark/30 group-hover:bg-earth-bark/50 transition-all">
                   <motion.div
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
-                    className="bg-blue-600 rounded-full p-4 text-white shadow-lg hover:bg-blue-700 transition-colors"
+                    className="bg-earth-terracotta rounded-full p-4 text-earth-light shadow-lg hover:bg-earth-rust transition-colors"
                   >
                     <FaPlay className="w-6 h-6" />
                   </motion.div>
