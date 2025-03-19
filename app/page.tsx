@@ -11,10 +11,10 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       <Hero />
-      <Services />
       {/* <FeaturedWork /> */}
       <CallToAction />
       <Portfolio />
+      <Services />
       <Testimonials />
       <Contact />
     </div>
