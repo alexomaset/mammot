@@ -90,11 +90,11 @@ export default function Hero() {
                 className="relative w-full max-w-2xl mx-auto lg:mx-0"
               >
                 <Image
-                  src="/logo.png"
+                  src="/logo1.png"
                   alt="Mamot Logo"
                   width={450}
                   height={100}
-                  className="w-60 h-200"
+                  className="w-100 h-200"
                   priority
                 />
               </motion.div>
@@ -140,12 +140,6 @@ export default function Hero() {
               transition={{ delay: 1.6, duration: 0.8 }}
               className="flex items-center justify-center lg:justify-start gap-6"
             >
-              <Link href="https://instagram.com" className="text-white hover:text-blue-400 transition-colors hover:scale-110 transform duration-200">
-                <FaInstagram className="w-6 h-6" />
-              </Link>
-              <Link href="https://tiktok.com" className="text-white hover:text-blue-400 transition-colors hover:scale-110 transform duration-200">
-                <FaTiktok className="w-6 h-6" />
-              </Link>
             </motion.div>
           </motion.div>
 
