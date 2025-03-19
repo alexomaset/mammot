@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaLinkedin, FaTwitter, FaInstagram, FaTiktok } from 'react-icons/fa'
+import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaInstagram, FaTiktok, FaRobot, FaPaperPlane, FaTimes } from 'react-icons/fa'
 
 const contactInfo = [
   {
@@ -30,6 +30,16 @@ const socialLinks = [
   { icon: <FaInstagram className="w-5 h-5" />, link: "https://instagram.com" }
 ]
 
+// Types for the chatbot
+type ChatMessage = {
+  id: number;
+  text: string;
+  sender: 'user' | 'bot';
+  timestamp: Date;
+}
+
+type ChatbotState = 'minimized' | 'open';
+
 export default function Contact() {
   const [formData, setFormData] = useState({
     name: '',
@@ -39,6 +49,12 @@ export default function Contact() {
   })
 
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle')
+  
+  // Chatbot states
+  const [chatbotState, setChatbotState] = useState<ChatbotState>('minimized')
+  const [messages, setMessages] = useState<ChatMessage[]>([])
+  const [inputMessage, setInputMessage] = useState('')
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
@@ -57,6 +73,69 @@ export default function Contact() {
     } catch (error) {
       setFormStatus('error')
     }
+  }
+  
+  // Chatbot functionality
+  useEffect(() => {
+    // Send welcome message when chatbot first opens
+    if (messages.length === 0) {
+      const welcomeMessage: ChatMessage = {
+        id: 1,
+        text: "Hi there! I'm Mamot, Muthusi's assistant. How can I help you today? I can provide information about our services, pricing, or answer any questions you might have.",
+        sender: 'bot',
+        timestamp: new Date()
+      }
+      setMessages([welcomeMessage])
+    }
+    
+    // Auto-scroll to the latest message
+    scrollToBottom()
+  }, [messages])
+  
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+  
+  const toggleChatbot = () => {
+    setChatbotState(chatbotState === 'minimized' ? 'open' : 'minimized')
+  }
+  
+  const handleMessageSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!inputMessage.trim()) return
+    
+    // Add user message
+    const newUserMessage: ChatMessage = {
+      id: messages.length + 1,
+      text: inputMessage,
+      sender: 'user',
+      timestamp: new Date()
+    }
+    
+    setMessages([...messages, newUserMessage])
+    setInputMessage('')
+    
+    // Simulate bot response after a delay
+    setTimeout(() => {
+      const botResponses = [
+        "Thank you for your message! Muthusi will get back to you shortly.",
+        "I'd be happy to help with that. Could you provide more details?",
+        "That's a great question! Our services include photography, videography, and digital storytelling.",
+        "We specialize in capturing unforgettable moments and turning them into lasting memories.",
+        "Our team is available for bookings throughout Kenya and East Africa."
+      ]
+      
+      const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)]
+      
+      const newBotMessage: ChatMessage = {
+        id: messages.length + 2,
+        text: randomResponse,
+        sender: 'bot',
+        timestamp: new Date()
+      }
+      
+      setMessages(prevMessages => [...prevMessages, newBotMessage])
+    }, 1000)
   }
 
   return (
@@ -233,6 +312,84 @@ export default function Contact() {
             </form>
           </motion.div>
         </div>
+      </div>
+      
+      {/* Chatbot Button */}
+      <div className={`fixed bottom-8 right-8 z-50 transition-all duration-300 transform ${chatbotState === 'minimized' ? 'scale-100' : 'scale-0'}`}>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={toggleChatbot}
+          className="bg-earth-terracotta text-earth-light p-4 rounded-full shadow-lg hover:bg-earth-rust transition-colors"
+        >
+          <FaRobot className="w-6 h-6" />
+        </motion.button>
+      </div>
+      
+      {/* Chatbot Interface */}
+      <div 
+        className={`fixed bottom-8 right-8 w-80 md:w-96 bg-earth-light rounded-lg shadow-xl overflow-hidden z-50 transition-all duration-300 ${
+          chatbotState === 'open' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'
+        }`}
+      >
+        {/* Chatbot Header */}
+        <div className="flex items-center justify-between p-4 bg-earth-brown text-earth-light">
+          <div className="flex items-center space-x-2">
+            <FaRobot className="w-5 h-5" />
+            <h3 className="font-semibold">Mamot Assistant</h3>
+          </div>
+          <button 
+            onClick={toggleChatbot}
+            className="text-earth-light hover:text-earth-sand transition-colors"
+          >
+            <FaTimes className="w-5 h-5" />
+          </button>
+        </div>
+        
+        {/* Chat Messages */}
+        <div className="p-4 h-80 overflow-y-auto bg-earth-light/80 backdrop-blur-sm">
+          {messages.map((message) => (
+            <div 
+              key={message.id}
+              className={`mb-4 ${message.sender === 'user' ? 'text-right' : 'text-left'}`}
+            >
+              <div 
+                className={`inline-block max-w-[80%] p-3 rounded-lg ${
+                  message.sender === 'user' 
+                    ? 'bg-earth-terracotta text-earth-light rounded-tr-none' 
+                    : 'bg-earth-sand text-earth-brown rounded-tl-none'
+                }`}
+              >
+                <p>{message.text}</p>
+                <span className="text-xs opacity-75 mt-1 block">
+                  {`${message.timestamp.getHours().toString().padStart(2, '0')}:${
+                    message.timestamp.getMinutes().toString().padStart(2, '0')
+                  }`}
+                </span>
+              </div>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+        
+        {/* Chat Input */}
+        <form onSubmit={handleMessageSubmit} className="p-4 border-t border-earth-sand">
+          <div className="flex space-x-2">
+            <input
+              type="text"
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              placeholder="Type your message..."
+              className="flex-1 px-4 py-2 rounded-full border border-earth-sand focus:ring-2 focus:ring-earth-terracotta focus:border-transparent"
+            />
+            <button
+              type="submit"
+              className="bg-earth-terracotta text-earth-light p-2 rounded-full hover:bg-earth-rust transition-colors"
+            >
+              <FaPaperPlane className="w-5 h-5" />
+            </button>
+          </div>
+        </form>
       </div>
     </section>
   )

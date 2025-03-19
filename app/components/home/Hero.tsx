@@ -87,14 +87,14 @@ export default function Hero() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8 }}
-                className="relative w-full max-w-2xl mx-auto lg:mx-0"
+                className="relative w-full flex justify-center items-center mx-auto"
               >
                 <Image
                   src="/logo1.png"
                   alt="Mamot Logo"
                   width={450}
                   height={100}
-                  className="w-100 h-200"
+                  className="w-70 h-auto mx-auto"
                   priority
                 />
               </motion.div>
@@ -104,7 +104,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 20 }}
               transition={{ delay: 1.0, duration: 0.8 }}
-              className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto lg:mx-0"
+              className="text-xl text-gray-200 mb-8 max-w-2xl mx-auto text-center"
               style={{ 
                 fontFamily: "'Montserrat', sans-serif",
                 letterSpacing: "0.02em",
