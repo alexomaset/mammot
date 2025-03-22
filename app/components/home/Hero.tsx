@@ -79,7 +79,7 @@ export default function Hero() {
             >
               <Link
                 href="/contact"
-                className="bg-blue-600 text-white px-6 py-3 rounded-full font-medium hover:bg-blue-700 transition-all"
+                className="bg-gradient-to-r from-amber-600 to-emerald-600 text-white px-8 py-3 rounded-full font-semibold hover:brightness-105 shadow-md transition-all duration-300 transform hover:-translate-y-1 border border-amber-200"
               >
                 Join Our Journey
               </Link>

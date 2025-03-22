@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { FaSearch, FaHashtag, FaPen, FaAd, FaEnvelope, FaCode } from 'react-icons/fa'
+import { FaSearch, FaHashtag, FaPen, FaAd, FaEnvelope, FaCode, FaLeaf } from 'react-icons/fa'
 import { IconType } from 'react-icons'
 
 interface Service {
@@ -36,6 +36,12 @@ const services: Service[] = [
     title: 'Email Marketing',
     description: 'Build and nurture customer relationships through strategic email marketing campaigns.',
     features: ['List Building', 'Campaign Design', 'Automation', 'A/B Testing']
+  },
+  {
+    icon: FaLeaf,
+    title: 'Sustainable Marketing',
+    description: 'Eco-friendly marketing strategies that align with green values and attract conscious consumers.',
+    features: ['Green Branding', 'Ethical Campaigns', 'Sustainable Messaging', 'Impact Reporting']
   }
 ]
 
@@ -61,12 +67,12 @@ export default function Services() {
   }
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-gradient-to-b from-stone-50 to-amber-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Services</h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Comprehensive digital marketing solutions to help your business grow and succeed online
+          <h2 className="text-4xl font-bold text-amber-900 mb-4">Our Services</h2>
+          <p className="text-xl text-stone-700 max-w-2xl mx-auto">
+            Naturally effective digital marketing solutions rooted in sustainable growth and authentic engagement
           </p>
         </div>
 
@@ -81,17 +87,21 @@ export default function Services() {
             <motion.div
               key={index}
               variants={itemVariants}
-              className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition duration-300 border border-gray-100"
+              className="bg-white p-8 rounded-xl shadow-md hover:shadow-lg transition duration-300 border border-stone-200"
+              style={{
+                background: "linear-gradient(145deg, #ffffff, #f5f5f0)",
+                boxShadow: "0 10px 15px -3px rgba(120, 80, 40, 0.05), 0 4px 6px -2px rgba(120, 80, 40, 0.025)"
+              }}
             >
-              <div className="text-blue-600 mb-6">
+              <div className="text-emerald-700 mb-6">
                 <service.icon size={40} />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">{service.title}</h3>
-              <p className="text-gray-600 mb-6">{service.description}</p>
+              <h3 className="text-2xl font-bold text-amber-800 mb-4">{service.title}</h3>
+              <p className="text-stone-600 mb-6">{service.description}</p>
               <ul className="space-y-2">
                 {service.features.map((feature, featureIndex) => (
-                  <li key={featureIndex} className="flex items-center text-gray-600">
-                    <span className="w-2 h-2 bg-blue-600 rounded-full mr-2"></span>
+                  <li key={featureIndex} className="flex items-center text-stone-600">
+                    <span className="w-2 h-2 bg-amber-600 rounded-full mr-2"></span>
                     {feature}
                   </li>
                 ))}
@@ -103,7 +113,7 @@ export default function Services() {
         <div className="text-center mt-12">
           <a
             href="/contact"
-            className="inline-block bg-blue-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-blue-700 transition duration-300"
+            className="inline-block bg-emerald-700 text-white px-8 py-3 rounded-full font-semibold hover:bg-emerald-600 shadow-md transition duration-300 transform hover:-translate-y-1"
           >
             Get Started with Our Services
           </a>
