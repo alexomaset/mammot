@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaInstagram, FaTiktok, FaRobot, FaPaperPlane, FaTimes } from 'react-icons/fa'
+import { FaEnvelope, FaPhone, FaMapMarkerAlt, FaInstagram, FaTiktok, FaRobot, FaPaperPlane, FaTimes, FaComments, FaHeadset, FaQuestionCircle } from 'react-icons/fa'
 
 const contactInfo = [
   {
@@ -314,16 +314,26 @@ export default function Contact() {
         </div>
       </div>
       
-      {/* Chatbot Button */}
+      {/* Chatbot Button - Enhanced */}
       <div className={`fixed bottom-8 right-8 z-50 transition-all duration-300 transform ${chatbotState === 'minimized' ? 'scale-100' : 'scale-0'}`}>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={toggleChatbot}
-          className="bg-earth-terracotta text-earth-light p-4 rounded-full shadow-lg hover:bg-earth-rust transition-colors"
-        >
-          <FaRobot className="w-6 h-6" />
-        </motion.button>
+        <div className="relative">
+          {/* Animated Pulse Effect */}
+          <div className="absolute inset-0 rounded-full bg-emerald-500 opacity-20 animate-ping"></div>
+          
+          {/* Main Button */}
+          <motion.button
+            whileHover={{ scale: 1.05, boxShadow: "0 8px 16px rgba(0, 0, 0, 0.15)" }}
+            whileTap={{ scale: 0.95 }}
+            onClick={toggleChatbot}
+            className="bg-gradient-to-r from-emerald-600 to-amber-600 text-white p-4 rounded-full shadow-lg hover:from-emerald-700 hover:to-amber-700 transition-all duration-300 flex items-center space-x-2 pr-5"
+          >
+            <FaHeadset className="w-6 h-6" />
+            <span className="font-medium text-sm">Chat with us</span>
+          </motion.button>
+          
+          {/* Notification Dot */}
+          <div className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full"></div>
+        </div>
       </div>
       
       {/* Chatbot Interface */}
@@ -332,15 +342,15 @@ export default function Contact() {
           chatbotState === 'open' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'
         }`}
       >
-        {/* Chatbot Header */}
-        <div className="flex items-center justify-between p-4 bg-earth-brown text-earth-light">
+        {/* Chatbot Header - Updated */}
+        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-emerald-700 to-amber-700 text-white">
           <div className="flex items-center space-x-2">
-            <FaRobot className="w-5 h-5" />
+            <FaHeadset className="w-5 h-5" />
             <h3 className="font-semibold">Mamot Assistant</h3>
           </div>
           <button 
             onClick={toggleChatbot}
-            className="text-earth-light hover:text-earth-sand transition-colors"
+            className="text-white hover:text-amber-200 transition-colors"
           >
             <FaTimes className="w-5 h-5" />
           </button>
