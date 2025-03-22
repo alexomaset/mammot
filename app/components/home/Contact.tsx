@@ -317,22 +317,22 @@ export default function Contact() {
       {/* Chatbot Button - Enhanced */}
       <div className={`fixed bottom-8 right-8 z-50 transition-all duration-300 transform ${chatbotState === 'minimized' ? 'scale-100' : 'scale-0'}`}>
         <div className="relative">
-          {/* Animated Pulse Effect */}
-          <div className="absolute inset-0 rounded-full bg-emerald-500 opacity-20 animate-ping"></div>
+          {/* Animated Pulse Effect - Moved behind button */}
+          <div className="absolute inset-0 rounded-full bg-emerald-500 opacity-20 animate-ping -z-10"></div>
           
-          {/* Main Button */}
+          {/* Main Button - Made more clickable */}
           <motion.button
             whileHover={{ scale: 1.05, boxShadow: "0 8px 16px rgba(0, 0, 0, 0.15)" }}
             whileTap={{ scale: 0.95 }}
             onClick={toggleChatbot}
-            className="bg-gradient-to-r from-emerald-600 to-amber-600 text-white p-4 rounded-full shadow-lg hover:from-emerald-700 hover:to-amber-700 transition-all duration-300 flex items-center space-x-2 pr-5"
+            className="relative bg-gradient-to-r from-emerald-600 to-amber-600 text-white p-4 rounded-full shadow-lg hover:from-emerald-700 hover:to-amber-700 transition-all duration-300 flex items-center space-x-2 pr-5 z-10"
           >
             <FaHeadset className="w-6 h-6" />
             <span className="font-medium text-sm">Chat with us</span>
           </motion.button>
           
-          {/* Notification Dot */}
-          <div className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full"></div>
+          {/* Notification Dot - Positioned above button */}
+          <div className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full z-20"></div>
         </div>
       </div>
       
