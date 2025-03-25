@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { FaPlay, FaArrowRight } from 'react-icons/fa'
 
@@ -14,51 +14,42 @@ interface PortfolioItem {
   tags: string[]
 }
 
-const portfolioItems: PortfolioItem[] = [
-  {
-    id: 1,
-    title: "Adventure in Paradise",
-    category: "Travel & Lifestyle",
-    videoUrl: "https://player.vimeo.com/external/368763065.sd.mp4?s=308c8c3688ac49b3b307c54f0fa2c894ff2accf2&profile_id=139&oauth2_token_id=57447761",
-    thumbnail: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000&auto=format&fit=crop",
-    description: "Exploring hidden beaches and tropical destinations",
-    tags: ["travel", "nature", "adventure"]
-  },
-  {
-    id: 2,
-    title: "Urban Lifestyle",
-    category: "City Life",
-    videoUrl: "https://player.vimeo.com/external/449583221.sd.mp4?s=0dbff82591f986cd631ab79854b5dccd5a221020&profile_id=139&oauth2_token_id=57447761",
-    thumbnail: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?q=80&w=1000&auto=format&fit=crop",
-    description: "Modern city living through a creative lens",
-    tags: ["urban", "lifestyle", "modern"]
-  },
-  {
-    id: 3,
-    title: "Food Journey",
-    category: "Culinary",
-    videoUrl: "https://player.vimeo.com/external/537834385.sd.mp4?s=d81025cb635d4d6e3fe137a5d5d11f5f18fd8e70&profile_id=165&oauth2_token_id=57447761",
-    thumbnail: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=1000&auto=format&fit=crop",
-    description: "Discovering unique flavors and cuisines",
-    tags: ["food", "culture", "travel"]
-  },
-  {
-    id: 4,
-    title: "Cultural Experience",
-    category: "Culture & Arts",
-    videoUrl: "https://player.vimeo.com/external/403156711.sd.mp4?s=a4d05de553717fd889c058a93f4582557c109836&profile_id=139&oauth2_token_id=57447761",
-    thumbnail: "https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?q=80&w=1000&auto=format&fit=crop",
-    description: "Immersive cultural experiences and traditions",
-    tags: ["culture", "arts", "tradition"]
-  }
-]
-
 export default function Portfolio() {
+  const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([])
   const [activeVideo, setActiveVideo] = useState<number | null>(null)
   const [selectedCategory, setSelectedCategory] = useState('all')
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const categories = ['all', 'Travel & Lifestyle', 'City Life', 'Culinary', 'Culture & Arts']
+  // Fetch portfolio items from API
+  useEffect(() => {
+    const fetchPortfolioItems = async () => {
+      try {
+        setIsLoading(true)
+        const response = await fetch('/api/portfolio')
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch portfolio items')
+        }
+        
+        const data = await response.json()
+        setPortfolioItems(data)
+        setError(null)
+      } catch (err) {
+        console.error('Error fetching portfolio items:', err)
+        setError('Failed to load portfolio items. Please try again later.')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    
+    fetchPortfolioItems()
+  }, [])
+
+  // Extract unique categories from portfolio items
+  const allCategories = portfolioItems.length > 0
+    ? ['all', ...Array.from(new Set(portfolioItems.map(item => item.category)))]
+    : ['all']
 
   const filteredItems = selectedCategory === 'all' 
     ? portfolioItems 
@@ -89,87 +80,118 @@ export default function Portfolio() {
           </motion.p>
         </div>
 
-        {/* Category Filter */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="flex flex-wrap justify-center gap-4 mb-12"
-        >
-          {categories.map((category, index) => (
-            <button
-              key={category}
-              onClick={() => setSelectedCategory(category)}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                selectedCategory === category
-                  ? 'bg-earth-terracotta text-earth-light shadow-lg shadow-earth-terracotta/30'
-                  : 'bg-earth-light text-earth-clay hover:bg-earth-beige'
-              }`}
-            >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-            </button>
-          ))}
-        </motion.div>
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-earth-terracotta"></div>
+          </div>
+        )}
 
-        {/* Portfolio Grid */}
-        <motion.div 
-          layout
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredItems.map((item, index) => (
-            <motion.div
-              key={item.id}
+        {/* Error State */}
+        {error && (
+          <div className="text-center py-12">
+            <p className="text-red-500 mb-4">{error}</p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-earth-terracotta text-white rounded-lg hover:bg-earth-rust transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        )}
+
+        {/* Category Filter */}
+        {!isLoading && !error && portfolioItems.length > 0 && (
+          <>
+            <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-              layout
-              className="group relative rounded-2xl overflow-hidden shadow-xl bg-earth-light hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="flex flex-wrap justify-center gap-4 mb-12"
             >
-              {/* Video Container */}
-              <div className="relative aspect-video cursor-pointer" onClick={() => setActiveVideo(item.id)}>
-                {/* Thumbnail */}
-                <div className="absolute inset-0 bg-earth-soil transform transition-transform duration-300 group-hover:scale-105">
-                  <div 
-                    className="w-full h-full bg-cover bg-center"
-                    style={{ backgroundImage: `url(${item.thumbnail})` }}
-                  />
-                </div>
-                
-                {/* Play Button Overlay */}
-                <div className="absolute inset-0 flex items-center justify-center bg-earth-bark/30 group-hover:bg-earth-bark/50 transition-all">
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="bg-earth-terracotta rounded-full p-4 text-earth-light shadow-lg hover:bg-earth-rust transition-colors"
-                  >
-                    <FaPlay className="w-6 h-6" />
-                  </motion.div>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-6 space-y-3">
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {item.tags.map((tag, tagIndex) => (
-                    <span key={tagIndex} className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-600 rounded-full">
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-                <span className="text-blue-600 text-sm font-medium">{item.category}</span>
-                <h3 className="text-xl font-bold mt-2 mb-3">{item.title}</h3>
-                <p className="text-gray-600 mb-4">{item.description}</p>
-                <button 
-                  onClick={() => setActiveVideo(item.id)}
-                  className="inline-flex items-center text-blue-600 font-medium hover:text-blue-700 transition-colors"
+              {allCategories.map((category, index) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
+                    selectedCategory === category
+                      ? 'bg-earth-terracotta text-earth-light shadow-lg shadow-earth-terracotta/30'
+                      : 'bg-earth-light text-earth-clay hover:bg-earth-beige'
+                  }`}
                 >
-                  Watch Video <FaArrowRight className="ml-2 w-4 h-4" />
+                  {category.charAt(0).toUpperCase() + category.slice(1)}
                 </button>
-              </div>
+              ))}
             </motion.div>
-          ))}
-        </motion.div>
+
+            {/* Portfolio Grid */}
+            <motion.div 
+              layout
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredItems.map((item, index) => (
+                <motion.div
+                  key={item.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.2 }}
+                  layout
+                  className="group relative rounded-2xl overflow-hidden shadow-xl bg-earth-light hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
+                >
+                  {/* Video Container */}
+                  <div className="relative aspect-video cursor-pointer" onClick={() => setActiveVideo(item.id)}>
+                    {/* Thumbnail */}
+                    <div className="absolute inset-0 bg-earth-soil transform transition-transform duration-300 group-hover:scale-105">
+                      <div 
+                        className="w-full h-full bg-cover bg-center"
+                        style={{ backgroundImage: `url(${item.thumbnail})` }}
+                      />
+                    </div>
+                    
+                    {/* Play Button Overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center bg-earth-bark/30 group-hover:bg-earth-bark/50 transition-all">
+                      <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="bg-earth-terracotta rounded-full p-4 text-earth-light shadow-lg hover:bg-earth-rust transition-colors"
+                      >
+                        <FaPlay className="w-6 h-6" />
+                      </motion.div>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-6 space-y-3">
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {item.tags && item.tags.map((tag, tagIndex) => (
+                        <span key={tagIndex} className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-600 rounded-full">
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                    <span className="text-blue-600 text-sm font-medium">{item.category}</span>
+                    <h3 className="text-xl font-bold mt-2 mb-3">{item.title}</h3>
+                    <p className="text-gray-600 mb-4">{item.description}</p>
+                    <button 
+                      onClick={() => setActiveVideo(item.id)}
+                      className="inline-flex items-center text-blue-600 font-medium hover:text-blue-700 transition-colors"
+                    >
+                      Watch Video <FaArrowRight className="ml-2 w-4 h-4" />
+                    </button>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && !error && portfolioItems.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-600 mb-4">No portfolio items found</p>
+          </div>
+        )}
 
         {/* Video Modal */}
         {activeVideo && (
@@ -187,13 +209,16 @@ export default function Portfolio() {
                 className="w-full rounded-lg shadow-2xl"
                 src={portfolioItems.find(item => item.id === activeVideo)?.videoUrl}
                 onError={(e) => {
-                  // Handle video loading error
                   console.error('Video loading error:', e);
-                  // You could set a state here to show a fallback UI
+                  setError('Failed to load video. Please try again later.');
+                  setActiveVideo(null);
                 }}
               />
               <button
-                onClick={() => setActiveVideo(null)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveVideo(null);
+                }}
                 className="absolute -top-12 right-0 text-white hover:text-gray-300"
               >
                 <svg

@@ -14,7 +14,7 @@ export default function CallToAction() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/contact"
-              className="bg-gradient-to-r from-amber-600 to-emerald-600 text-white px-8 py-3 rounded-full font-semibold hover:brightness-105 shadow-md transition-all duration-300 transform hover:-translate-y-1 border border-amber-200"
+              className="bg-[#6D412A] text-white px-8 py-3 rounded-full font-semibold hover:bg-[#7d4c32] transition-all"
             >
               Get Started
             </Link>

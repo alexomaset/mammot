@@ -281,10 +281,10 @@ export default function Contact() {
               <button
                 type="submit"
                 disabled={formStatus === 'submitting'}
-                className={`w-full py-3 px-6 rounded-lg text-earth-light font-medium transition-all
+                className={`w-full py-3 px-6 rounded-lg text-white font-medium transition-all
                   ${formStatus === 'submitting' 
-                    ? 'bg-earth-slate cursor-not-allowed' 
-                    : 'bg-earth-terracotta hover:bg-earth-rust hover:shadow-lg hover:shadow-earth-terracotta/30'
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-[#6D412A] hover:bg-[#7d4c32] hover:shadow-md'
                   }`}
               >
                 {formStatus === 'submitting' ? 'Sending...' : 'Send Message'}
@@ -320,19 +320,19 @@ export default function Contact() {
           {/* Animated Pulse Effect - Moved behind button */}
           <div className="absolute inset-0 rounded-full bg-emerald-500 opacity-20 animate-ping -z-10"></div>
           
-          {/* Main Button - Made more clickable */}
+          {/* Main Button - Made more minimalistic with #6D412A */}
           <motion.button
-            whileHover={{ scale: 1.05, boxShadow: "0 8px 16px rgba(0, 0, 0, 0.15)" }}
+            whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={toggleChatbot}
-            className="relative bg-gradient-to-r from-emerald-600 to-amber-600 text-white p-4 rounded-full shadow-lg hover:from-emerald-700 hover:to-amber-700 transition-all duration-300 flex items-center space-x-2 pr-5 z-10"
+            className="relative bg-[#6D412A] text-white p-3 rounded-full shadow-md hover:bg-[#7d4c32] transition-all duration-300 flex items-center space-x-2 pr-4 z-10"
           >
-            <FaHeadset className="w-6 h-6" />
-            <span className="font-medium text-sm">Chat with us</span>
+            <FaHeadset className="w-5 h-5" />
+            <span className="font-medium text-sm">Chat</span>
           </motion.button>
           
-          {/* Notification Dot - Positioned above button */}
-          <div className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full z-20"></div>
+          {/* Notification Dot - More subtle */}
+          <div className="absolute top-0 right-0 w-2 h-2 bg-amber-500 rounded-full z-20"></div>
         </div>
       </div>
       
@@ -342,17 +342,17 @@ export default function Contact() {
           chatbotState === 'open' ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12 pointer-events-none'
         }`}
       >
-        {/* Chatbot Header - Updated */}
-        <div className="flex items-center justify-between p-4 bg-gradient-to-r from-emerald-700 to-amber-700 text-white">
+        {/* Chatbot Header - Updated to minimalistic style */}
+        <div className="flex items-center justify-between p-3 bg-[#6D412A] text-white">
           <div className="flex items-center space-x-2">
-            <FaHeadset className="w-5 h-5" />
-            <h3 className="font-semibold">Mamot Assistant</h3>
+            <FaHeadset className="w-4 h-4" />
+            <h3 className="font-medium text-sm">Mamot Assistant</h3>
           </div>
           <button 
             onClick={toggleChatbot}
-            className="text-white hover:text-amber-200 transition-colors"
+            className="text-white/80 hover:text-white transition-colors"
           >
-            <FaTimes className="w-5 h-5" />
+            <FaTimes className="w-4 h-4" />
           </button>
         </div>
         
@@ -394,9 +394,9 @@ export default function Contact() {
             />
             <button
               type="submit"
-              className="bg-earth-terracotta text-earth-light p-2 rounded-full hover:bg-earth-rust transition-colors"
+              className="bg-[#6D412A] text-white p-2 rounded-full hover:bg-[#7d4c32] transition-colors"
             >
-              <FaPaperPlane className="w-5 h-5" />
+              <FaPaperPlane className="w-4 h-4" />
             </button>
           </div>
         </form>

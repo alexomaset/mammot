@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "title": "Adventure in Paradise",
+    "category": "Travel & Lifestyle",
+    "videoUrl": "https://player.vimeo.com/external/368763065.sd.mp4?s=308c8c3688ac49b3b307c54f0fa2c894ff2accf2&profile_id=139&oauth2_token_id=57447761",
+    "thumbnail": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000&auto=format&fit=crop",
+    "description": "Exploring hidden beaches and tropical destinations",
+    "tags": [
+      "travel",
+      "nature",
+      "adventure"
+    ],
+    "createdAt": "2025-03-24T14:06:04.143Z",
+    "updatedAt": "2025-03-24T14:12:16.552Z"
+  },
+  {
+    "id": 2,
+    "title": "Amboseli",
+    "category": "Liffestyle",
+    "videoUrl": "/uploads/videos/d48c4ff0-0ad4-4e63-805a-ed1f53531306.mp4",
+    "thumbnail": "/uploads/images/0e2b0a0a-ad6d-4543-a654-ee61028a2857.png",
+    "description": "Amboseli adevnture",
+    "tags": [],
+    "createdAt": "2025-03-25T06:09:08.997Z"
+  }
+]
