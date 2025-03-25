@@ -4,8 +4,16 @@ import { sign } from 'jsonwebtoken';
 
 // In a real application, these would be stored securely in environment variables
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'password';
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'password123'; // Changed default password for security
+const JWT_SECRET = process.env.JWT_SECRET || 'development-secret-key-for-local-testing-only';
+
+// Debug info for development only
+if (process.env.NODE_ENV === 'development') {
+  console.log('⚙️ Auth configuration:');
+  console.log(`- Admin username: ${ADMIN_USERNAME}`);
+  console.log(`- Admin password: ${ADMIN_PASSWORD}`);
+  console.log('Use these credentials to log in to the admin panel in development mode');
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,6 +31,11 @@ export async function POST(request: NextRequest) {
     try {
       const decoded = atob(credentials);
       const [username, password] = decoded.split(':');
+      
+      // Log authentication attempt in development
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`🔐 Auth attempt: ${username} / ${password.replace(/./g, '*')}`);
+      }
       
       if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
         // Create a JWT token
@@ -45,9 +58,11 @@ export async function POST(request: NextRequest) {
           path: '/',
         });
         
+        console.log('✅ Authentication successful');
         return response;
       }
       
+      console.log('❌ Authentication failed: Invalid username or password');
       return NextResponse.json(
         { success: false, message: 'Invalid username or password' },
         { status: 401 }

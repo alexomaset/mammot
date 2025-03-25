@@ -15,17 +15,44 @@ interface PortfolioItem {
 }
 
 export default function Portfolio() {
+  const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([])
-  const [activeVideo, setActiveVideo] = useState<number | null>(null)
-  const [selectedCategory, setSelectedCategory] = useState('all')
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [videoModal, setVideoModal] = useState<{ isOpen: boolean; url: string }>({
+    isOpen: false,
+    url: '',
+  })
 
-  // Fetch portfolio items from API
+  // Placeholder data for development when API fails
+  const placeholderItems: PortfolioItem[] = [
+    {
+      id: 1,
+      title: "Adventure in Paradise",
+      category: "Travel & Lifestyle",
+      videoUrl: "https://player.vimeo.com/external/368763065.sd.mp4?s=308c8c3688ac49b3b307c54f0fa2c894ff2accf2&profile_id=139&oauth2_token_id=57447761",
+      thumbnail: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000&auto=format&fit=crop",
+      description: "Exploring hidden beaches and tropical destinations",
+      tags: ["travel", "nature", "adventure"],
+    },
+    {
+      id: 2,
+      title: "Urban Exploration",
+      category: "Documentation",
+      videoUrl: "https://player.vimeo.com/external/371839222.sd.mp4?s=28a7c342d227c246b0e6fe93121e3c4a72b00bad&profile_id=139&oauth2_token_id=57447761",
+      thumbnail: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?q=80&w=1000&auto=format&fit=crop",
+      description: "Documenting city life and architecture",
+      tags: ["urban", "architecture", "documentary"],
+    }
+  ]
+
+  // Fetch portfolio items
   useEffect(() => {
-    const fetchPortfolioItems = async () => {
+    async function fetchPortfolioItems() {
       try {
         setIsLoading(true)
+        setError(null)
+        
         const response = await fetch('/api/portfolio')
         
         if (!response.ok) {
@@ -33,16 +60,28 @@ export default function Portfolio() {
         }
         
         const data = await response.json()
-        setPortfolioItems(data)
-        setError(null)
+        
+        // Use placeholder data if no items are returned (for development)
+        if (data.length === 0 && process.env.NODE_ENV === 'development') {
+          console.log('No portfolio items found. Using placeholder data for development.')
+          setPortfolioItems(placeholderItems)
+        } else {
+          setPortfolioItems(data)
+        }
       } catch (err) {
         console.error('Error fetching portfolio items:', err)
-        setError('Failed to load portfolio items. Please try again later.')
+        setError('Failed to load portfolio items')
+        
+        // Use placeholder data on error in development
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Error fetching portfolio data. Using placeholder data for development.')
+          setPortfolioItems(placeholderItems)
+        }
       } finally {
         setIsLoading(false)
       }
     }
-    
+
     fetchPortfolioItems()
   }, [])
 
@@ -140,7 +179,7 @@ export default function Portfolio() {
                   className="group relative rounded-2xl overflow-hidden shadow-xl bg-earth-light hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2"
                 >
                   {/* Video Container */}
-                  <div className="relative aspect-video cursor-pointer" onClick={() => setActiveVideo(item.id)}>
+                  <div className="relative aspect-video cursor-pointer" onClick={() => setVideoModal({ isOpen: true, url: item.videoUrl })}>
                     {/* Thumbnail */}
                     <div className="absolute inset-0 bg-earth-soil transform transition-transform duration-300 group-hover:scale-105">
                       <div 
@@ -174,7 +213,7 @@ export default function Portfolio() {
                     <h3 className="text-xl font-bold mt-2 mb-3">{item.title}</h3>
                     <p className="text-gray-600 mb-4">{item.description}</p>
                     <button 
-                      onClick={() => setActiveVideo(item.id)}
+                      onClick={() => setVideoModal({ isOpen: true, url: item.videoUrl })}
                       className="inline-flex items-center text-blue-600 font-medium hover:text-blue-700 transition-colors"
                     >
                       Watch Video <FaArrowRight className="ml-2 w-4 h-4" />
@@ -194,30 +233,30 @@ export default function Portfolio() {
         )}
 
         {/* Video Modal */}
-        {activeVideo && (
+        {videoModal.isOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
-            onClick={() => setActiveVideo(null)}
+            onClick={() => setVideoModal({ isOpen: false, url: '' })}
           >
             <div className="relative w-full max-w-4xl mx-auto">
               <video
                 autoPlay
                 controls
                 className="w-full rounded-lg shadow-2xl"
-                src={portfolioItems.find(item => item.id === activeVideo)?.videoUrl}
+                src={videoModal.url}
                 onError={(e) => {
-                  console.error('Video loading error:', e);
-                  setError('Failed to load video. Please try again later.');
-                  setActiveVideo(null);
+                  console.error('Video loading error:', e)
+                  setError('Failed to load video. Please try again later.')
+                  setVideoModal({ isOpen: false, url: '' })
                 }}
               />
               <button
                 onClick={(e) => {
-                  e.stopPropagation();
-                  setActiveVideo(null);
+                  e.stopPropagation()
+                  setVideoModal({ isOpen: false, url: '' })
                 }}
                 className="absolute -top-12 right-0 text-white hover:text-gray-300"
               >

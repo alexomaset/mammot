@@ -9,7 +9,11 @@ import Contact from './components/home/Contact'
 
 export default function Home() {
   return (
-    <div className="flex flex-col">
+    <main>
+      <div style={{ display: 'none' }}>
+        <img src="https://images.unsplash.com/photo-1536240478700-b869070f9279?w=800&auto=format&fit=crop" alt="Video Thumbnail" id="video-thumbnail" />
+      </div>
+      
       <Hero />
       {/* <FeaturedWork /> */}
       <CallToAction />
@@ -17,6 +21,6 @@ export default function Home() {
       <Services />
       <Testimonials />
       <Contact />
-    </div>
+    </main>
   )
 }

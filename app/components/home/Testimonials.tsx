@@ -9,21 +9,21 @@ const testimonials = [
   {
     name: 'Sarah Johnson',
     position: 'CEO, TechStart Inc.',
-    image: '/images/testimonials/sarah.jpg',
+    image: 'https://randomuser.me/api/portraits/women/44.jpg',
     quote: 'MAMOT Digital Marketing transformed our online presence. Our organic traffic increased by 300% within 6 months, and our conversion rate doubled.',
     rating: 5
   },
   {
     name: 'Michael Chen',
     position: 'Marketing Director, GrowthCo',
-    image: '/images/testimonials/michael.jpg',
+    image: 'https://randomuser.me/api/portraits/men/32.jpg',
     quote: 'The team\'s expertise in social media marketing helped us build a strong brand presence. Our engagement rates have never been better.',
     rating: 5
   },
   {
     name: 'Emily Rodriguez',
     position: 'Founder, E-commerce Solutions',
-    image: '/images/testimonials/emily.jpg',
+    image: 'https://randomuser.me/api/portraits/women/68.jpg',
     quote: 'Their PPC campaigns have been game-changing for our business. We\'ve seen a 200% ROI on our advertising spend.',
     rating: 5
   }

@@ -1,31 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { getToken } from 'next-auth/jwt';
+import { put } from '@vercel/blob';
 
-// Define the upload directory paths
-const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads');
-const VIDEO_DIR = path.join(UPLOAD_DIR, 'videos');
-const IMAGE_DIR = path.join(UPLOAD_DIR, 'images');
+// Check if we're in development mode
+const isDevelopment = process.env.NODE_ENV === 'development';
 
-// Ensure directories exist
-async function ensureDirectories() {
-  if (!existsSync(UPLOAD_DIR)) {
-    await mkdir(UPLOAD_DIR, { recursive: true });
-  }
-  if (!existsSync(VIDEO_DIR)) {
-    await mkdir(VIDEO_DIR, { recursive: true });
-  }
-  if (!existsSync(IMAGE_DIR)) {
-    await mkdir(IMAGE_DIR, { recursive: true });
-  }
-}
-
-// Handle file upload
 export async function POST(request: NextRequest) {
   try {
-    await ensureDirectories();
+    // Skip authentication in development mode
+    if (!isDevelopment) {
+      // Check authentication in production
+      const token = await getToken({ req: request as any });
+      if (!token || token.role !== 'admin') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+    }
 
     const formData = await request.formData();
     const file = formData.get('file') as File | null;
@@ -71,24 +60,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get file extension
+    // Generate a unique path for the file
     const fileExt = file.name.split('.').pop()?.toLowerCase() || '';
+    const timestamp = Date.now();
+    const fileNameBase = file.name.substring(0, 20).replace(/[^a-zA-Z0-9]/g, '_');
+    const fileName = `${timestamp}-${fileNameBase}.${fileExt}`;
+    const path = `${type}s/${fileName}`;
 
-    // Create a unique filename
-    const fileName = `${uuidv4()}.${fileExt}`;
-    const dir = type === 'video' ? VIDEO_DIR : IMAGE_DIR;
-    const filePath = path.join(dir, fileName);
-
-    // Convert file to buffer and save it
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await writeFile(filePath, buffer);
-
-    // Generate the public URL
-    const publicUrl = `/uploads/${type}s/${fileName}`;
+    // Upload to Vercel Blob Storage
+    const blob = await put(path, file, {
+      access: 'public',
+    });
 
     return NextResponse.json({
-      url: publicUrl,
+      url: blob.url,
       fileName,
       success: true
     });
