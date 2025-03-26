@@ -72,9 +72,7 @@ export default function Header() {
             </Link>
             <Link
               href="/contact"
-              className={`bg-earth-terracotta text-earth-light px-8 py-3 rounded-full font-medium text-lg hover:bg-earth-rust transition-all hover:scale-105 shadow-lg ${
-                isScrolled ? 'shadow-earth-terracotta/30' : 'shadow-earth-rust/50'
-              }`}
+              className="bg-[#6D412A] text-white px-6 py-3 rounded-full font-medium hover:bg-[#7d4c32] transition-all"
             >
               Get Started
             </Link>
@@ -148,7 +146,7 @@ export default function Header() {
             <div className="px-4 pb-2">
               <Link
                 href="/contact"
-                className="block bg-earth-terracotta text-earth-light px-8 py-3 rounded-full font-medium text-lg hover:bg-earth-rust transition-all text-center shadow-lg shadow-earth-terracotta/30"
+                className="bg-[#6D412A] text-white px-6 py-3 rounded-full font-medium hover:bg-[#7d4c32] transition-all"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Get Started

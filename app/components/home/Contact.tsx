@@ -8,14 +8,14 @@ const contactInfo = [
   {
     icon: <FaPhone className="w-6 h-6" />,
     title: "Phone",
-    content: "+254 712 345 678",
+    content: "+254 713 370 840",
     link: "tel:+254712345678"
   },
   {
     icon: <FaEnvelope className="w-6 h-6" />,
     title: "Email",
-    content: "hello@example.com",
-    link: "mailto:hello@example.com"
+    content: "mamotbymuthusi@gmail.com",
+    link: "mailto:mamotbymuthusi@gmail.com"
   },
   {
     icon: <FaMapMarkerAlt className="w-6 h-6" />,
@@ -27,7 +27,7 @@ const contactInfo = [
 
 const socialLinks = [
   { icon: <FaTiktok className="w-5 h-5" />, link: "https://tiktok.com" },
-  { icon: <FaInstagram className="w-5 h-5" />, link: "https://instagram.com" }
+  { icon: <FaInstagram className="w-5 h-5" />, link: "https://www.instagram.com/mamot_by_muthusi?igsh=MTR0N2N1YTN6aHd2dQ%3D%3D&utm_source=qr" }
 ]
 
 // Types for the chatbot

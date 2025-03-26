@@ -35,13 +35,13 @@ export default function Hero() {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-          {/* Left Content - Simplified */}
+        <div className="flex justify-center items-center">
+          {/* Hero Content - Centered */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="text-center lg:text-left"
+            className="text-center max-w-3xl"
           >
             {/* Logo */}
             <motion.div
@@ -51,11 +51,11 @@ export default function Hero() {
               className="mb-8"
             >
               <Image
-                src="/logo1.png"
+                src="/logo3.png"
                 alt="Mamot Logo"
                 width={450}
                 height={100}
-                className="w-64 h-auto mx-auto lg:mx-0"
+                className="w-64 h-auto mx-auto"
                 priority
               />
             </motion.div>
@@ -65,7 +65,7 @@ export default function Hero() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.6 }}
-              className="text-xl text-gray-200 mb-6 max-w-lg mx-auto lg:mx-0"
+              className="text-xl text-gray-200 mb-6 max-w-lg mx-auto"
             >
               Filling the gap in unforgettable digital storytelling. Turning moments into lasting memories.
             </motion.p>
@@ -75,7 +75,7 @@ export default function Hero() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8"
+              className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
             >
               <Link
                 href="/contact"
@@ -89,34 +89,13 @@ export default function Hero() {
               >
                 Explore Content
               </Link>
+              <button
+                onClick={toggleVideo}
+                className="bg-[#6D412A] text-white px-6 py-3 rounded-full font-medium hover:bg-[#7d4c32] transition-all flex items-center justify-center gap-2"
+              >
+                <FaPlay className="w-3 h-3" /> Watch Our Story
+              </button>
             </motion.div>
-          </motion.div>
-
-          {/* Right Content - Simplified Video Preview */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-            className="relative aspect-video rounded-xl overflow-hidden cursor-pointer shadow-lg"
-            onClick={toggleVideo}
-          >
-            {/* Video Thumbnail */}
-            <div 
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: 'url("/video-thumbnail.jpg")' }}
-            />
-            
-            {/* Play Button */}
-            <div className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/40 transition-all">
-              <div className="bg-blue-600 rounded-full p-4 text-white">
-                <FaPlay className="w-6 h-6" />
-              </div>
-            </div>
-
-            {/* Simple text overlay */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-              <p className="text-white text-sm">Click to watch our story</p>
-            </div>
           </motion.div>
         </div>
       </div>

@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { FaSearch, FaHashtag, FaPen, FaAd, FaEnvelope, FaCode, FaLeaf } from 'react-icons/fa'
+import { FaCamera, FaInstagram, FaPen, FaAd, FaChartLine, FaVideo, FaUsers, FaPalette } from 'react-icons/fa'
 import { IconType } from 'react-icons'
 
 interface Service {
@@ -14,34 +14,34 @@ interface Service {
 
 const services: Service[] = [
   {
-    icon: FaHashtag,
-    title: 'Social Media Marketing',
-    description: 'Build your brand presence and engage with your audience across all major social media platforms.',
-    features: ['Content Strategy', 'Community Management', 'Paid Social Ads', 'Analytics & Reporting']
+    icon: FaInstagram,
+    title: 'Social Media Management',
+    description: 'We create, schedule, and optimize content to keep your brand active and engaging across platforms like Instagram, TikTok, and more.',
+    features: ['Content Planning', 'Platform Management', 'Community Engagement', 'Performance Analytics']
   },
   {
     icon: FaPen,
-    title: 'Content Marketing',
-    description: 'Create valuable, engaging content that attracts and converts your target audience.',
-    features: ['Blog Writing', 'Email Newsletters', 'Infographics', 'Video Content']
+    title: 'Content Creation & Storytelling',
+    description: 'From compelling captions to engaging visuals, we craft narratives that connect with your audience.',
+    features: ['Brand Storytelling', 'Visual Narratives', 'Audience-Centered Content']
   },
   {
-    icon: FaAd,
-    title: 'Pay-Per-Click Advertising',
-    description: 'Maximize your ROI with targeted PPC campaigns across Google, Facebook, and other platforms.',
-    features: ['Campaign Strategy', 'Ad Creation', 'Bid Management', 'Performance Tracking']
+    icon: FaVideo,
+    title: 'Video Editing',
+    description: 'High-quality video editing services to enhance your brand\'s online presence.',
+    features: ['Professional Editing', 'Social Media Videos', 'Visual Style Development']
   },
   {
-    icon: FaEnvelope,
-    title: 'Email Marketing',
-    description: 'Build and nurture customer relationships through strategic email marketing campaigns.',
-    features: ['List Building', 'Campaign Design', 'Automation', 'A/B Testing']
+    icon: FaUsers,
+    title: 'Influencer Marketing Strategy',
+    description: 'Developing and implementing influencer collaborations to boost brand visibility and engagement.',
+    features: ['Influencer Identification', 'Partnership Management', 'Campaign Design', 'Performance Tracking']
   },
   {
-    icon: FaLeaf,
-    title: 'Sustainable Marketing',
-    description: 'Eco-friendly marketing strategies that align with green values and attract conscious consumers.',
-    features: ['Green Branding', 'Ethical Campaigns', 'Sustainable Messaging', 'Impact Reporting']
+    icon: FaChartLine,
+    title: 'Content Strategy & Market Research',
+    description: 'Data-driven content planning based on market trends and consumer behavior to maximize engagement and conversions.',
+    features: ['Audience Analysis', 'Trend Research', 'Content Calendar Planning', 'Performance Analytics']
   }
 ]
 
@@ -72,7 +72,7 @@ export default function Services() {
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-amber-900 mb-4">Our Services</h2>
           <p className="text-xl text-stone-700 max-w-2xl mx-auto">
-            Naturally effective digital marketing solutions rooted in sustainable growth and authentic engagement
+            Comprehensive digital marketing solutions that elevate your brand through authentic storytelling and strategic engagement
           </p>
         </div>
 
@@ -93,7 +93,7 @@ export default function Services() {
                 boxShadow: "0 10px 15px -3px rgba(120, 80, 40, 0.05), 0 4px 6px -2px rgba(120, 80, 40, 0.025)"
               }}
             >
-              <div className="text-emerald-700 mb-6">
+              <div className="text-black mb-6">
                 <service.icon size={40} />
               </div>
               <h3 className="text-2xl font-bold text-amber-800 mb-4">{service.title}</h3>
@@ -113,7 +113,7 @@ export default function Services() {
         <div className="text-center mt-12">
           <a
             href="/contact"
-            className="inline-block bg-emerald-700 text-white px-8 py-3 rounded-full font-semibold hover:bg-emerald-600 shadow-md transition duration-300 transform hover:-translate-y-1"
+            className="inline-block bg-[#6D412A] text-white px-8 py-3 rounded-full font-semibold hover:bg-[#7d4c32] transition-all"
           >
             Get Started with Our Services
           </a>
