@@ -1,18 +1,37 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
+import { verify } from 'jsonwebtoken';
 import { put } from '@vercel/blob';
 
-// Check if we're in development mode
+// Force development mode for local testing
 const isDevelopment = process.env.NODE_ENV === 'development';
+const JWT_SECRET = process.env.JWT_SECRET || 'development-secret-key-for-local-testing-only';
 
 export async function POST(request: NextRequest) {
   try {
     // Skip authentication in development mode
     if (!isDevelopment) {
-      // Check authentication in production
-      const token = await getToken({ req: request as any });
-      if (!token || token.role !== 'admin') {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      // Get the token from the cookie for production
+      const tokenCookie = request.cookies.get('admin_token');
+      
+      if (!tokenCookie || !tokenCookie.value) {
+        console.error('Upload unauthorized: No admin_token cookie found');
+        return NextResponse.json({ error: 'Unauthorized - Please log in' }, { status: 401 });
+      }
+      
+      try {
+        // Verify the JWT token from cookie
+        const decoded = verify(tokenCookie.value, JWT_SECRET) as any;
+        
+        // Check if the token contains admin role
+        if (!decoded || decoded.role !== 'admin') {
+          console.error('Upload unauthorized: Token invalid or not admin role', decoded);
+          return NextResponse.json({ error: 'Unauthorized - Invalid credentials' }, { status: 401 });
+        }
+        
+        console.log('Upload authentication successful for user:', decoded.username);
+      } catch (tokenError) {
+        console.error('Upload unauthorized: Token verification failed', tokenError);
+        return NextResponse.json({ error: 'Unauthorized - Invalid token' }, { status: 401 });
       }
     }
 

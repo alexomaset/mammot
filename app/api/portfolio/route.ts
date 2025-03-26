@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
+import { verify } from 'jsonwebtoken';
 import { 
   getPortfolioItems, 
   getPortfolioItemById, 
@@ -21,8 +21,54 @@ interface PortfolioItem {
   updatedAt?: string;
 }
 
-// Force development mode to bypass authentication
-const isDevelopment = true;
+// Force development mode for local testing
+const isDevelopment = process.env.NODE_ENV === 'development';
+const JWT_SECRET = process.env.JWT_SECRET || 'development-secret-key-for-local-testing-only';
+
+// Helper function to verify admin authentication
+function verifyAdminAuth(request: NextRequest): { authorized: boolean; message?: string; decoded?: any } {
+  // Skip authentication in development mode
+  if (isDevelopment) {
+    return { authorized: true };
+  }
+  
+  // Get the token from the cookie for production
+  const tokenCookie = request.cookies.get('admin_token');
+  
+  if (!tokenCookie || !tokenCookie.value) {
+    console.error('Portfolio API unauthorized: No admin_token cookie found');
+    return { 
+      authorized: false, 
+      message: 'Unauthorized - Please log in' 
+    };
+  }
+  
+  try {
+    // Verify the JWT token from cookie
+    const decoded = verify(tokenCookie.value, JWT_SECRET) as any;
+    
+    // Check if the token contains admin role
+    if (!decoded || decoded.role !== 'admin') {
+      console.error('Portfolio API unauthorized: Token invalid or not admin role', decoded);
+      return { 
+        authorized: false, 
+        message: 'Unauthorized - Invalid credentials' 
+      };
+    }
+    
+    console.log('Portfolio API authentication successful for user:', decoded.username);
+    return { 
+      authorized: true, 
+      decoded 
+    };
+  } catch (tokenError) {
+    console.error('Portfolio API unauthorized: Token verification failed', tokenError);
+    return { 
+      authorized: false, 
+      message: 'Unauthorized - Invalid token' 
+    };
+  }
+}
 
 // GET all portfolio items
 export async function GET(request: NextRequest) {
@@ -38,13 +84,10 @@ export async function GET(request: NextRequest) {
 // POST new portfolio item
 export async function POST(request: NextRequest) {
   try {
-    // Skip authentication in development mode
-    if (!isDevelopment) {
-      // Check authentication in production
-      const token = await getToken({ req: request as any });
-      if (!token || token.role !== 'admin') {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-      }
+    // Verify admin authorization
+    const auth = verifyAdminAuth(request);
+    if (!auth.authorized) {
+      return NextResponse.json({ error: auth.message }, { status: 401 });
     }
 
     const body = await request.json();
@@ -79,13 +122,10 @@ export async function POST(request: NextRequest) {
 // PUT (update) portfolio item
 export async function PUT(request: NextRequest) {
   try {
-    // Skip authentication in development mode
-    if (!isDevelopment) {
-      // Check authentication in production
-      const token = await getToken({ req: request as any });
-      if (!token || token.role !== 'admin') {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-      }
+    // Verify admin authorization
+    const auth = verifyAdminAuth(request);
+    if (!auth.authorized) {
+      return NextResponse.json({ error: auth.message }, { status: 401 });
     }
 
     const body = await request.json();
@@ -117,13 +157,10 @@ export async function PUT(request: NextRequest) {
 // DELETE portfolio item
 export async function DELETE(request: NextRequest) {
   try {
-    // Skip authentication in development mode
-    if (!isDevelopment) {
-      // Check authentication in production
-      const token = await getToken({ req: request as any });
-      if (!token || token.role !== 'admin') {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-      }
+    // Verify admin authorization
+    const auth = verifyAdminAuth(request);
+    if (!auth.authorized) {
+      return NextResponse.json({ error: auth.message }, { status: 401 });
     }
 
     // Get the ID from the URL
