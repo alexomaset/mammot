@@ -95,7 +95,7 @@ export default function Portfolio() {
     : portfolioItems.filter(item => item.category === selectedCategory)
 
   return (
-    <div className="py-20 bg-gray-50">
+    <div id="portfolio" className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="text-center mb-12">

@@ -4,10 +4,13 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { usePathname } from 'next/navigation'
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
+  const isHomePage = pathname === '/'
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +19,29 @@ export default function Header() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault()
+    
+    // Only apply smooth scrolling on the homepage
+    if (!isHomePage) {
+      window.location.href = `/#${id}`
+      return
+    }
+    
+    const element = document.getElementById(id)
+    if (element) {
+      window.scrollTo({
+        top: element.offsetTop - 100, // Offset for header
+        behavior: 'smooth'
+      })
+      
+      // Close mobile menu if open
+      if (isMobileMenuOpen) {
+        setIsMobileMenuOpen(false)
+      }
+    }
+  }
 
   return (
     <header className={`fixed w-full z-50 transition-all duration-500 ${
@@ -38,38 +64,42 @@ export default function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <Link 
-              href="/" 
+            <a 
+              href="#home" 
+              onClick={(e) => handleSmoothScroll(e, 'home')}
               className={`font-medium text-lg hover:text-earth-terracotta transition-colors ${
                 isScrolled ? 'text-earth-brown' : 'text-earth-light'
               }`}
             >
               Home
-            </Link>
-            <Link 
-              href="/services" 
+            </a>
+            <a 
+              href="#services" 
+              onClick={(e) => handleSmoothScroll(e, 'services')}
               className={`font-medium text-lg hover:text-earth-terracotta transition-colors ${
                 isScrolled ? 'text-earth-brown' : 'text-earth-light'
               }`}
             >
               Services
-            </Link>
-            <Link 
-              href="/about" 
+            </a>
+            <a 
+              href="#portfolio" 
+              onClick={(e) => handleSmoothScroll(e, 'portfolio')}
               className={`font-medium text-lg hover:text-earth-terracotta transition-colors ${
                 isScrolled ? 'text-earth-brown' : 'text-earth-light'
               }`}
             >
-              About
-            </Link>
-            <Link 
-              href="/contact" 
+              Portfolio
+            </a>
+            <a 
+              href="#contact" 
+              onClick={(e) => handleSmoothScroll(e, 'contact')}
               className={`font-medium text-lg hover:text-earth-terracotta transition-colors ${
                 isScrolled ? 'text-earth-brown' : 'text-earth-light'
               }`}
             >
               Contact
-            </Link>
+            </a>
             <Link
               href="/contact"
               className="bg-[#6D412A] text-white px-6 py-3 rounded-full font-medium hover:bg-[#7d4c32] transition-all"
@@ -108,41 +138,34 @@ export default function Header() {
           className="md:hidden overflow-hidden bg-earth-light/95 backdrop-blur-sm"
         >
           <nav className="py-4 space-y-4">
-            <Link
-              href="/"
+            <a
+              href="#home"
               className="block text-earth-clay hover:text-earth-terracotta transition-colors text-lg font-medium px-4"
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={(e) => handleSmoothScroll(e, 'home')}
             >
               Home
-            </Link>
-            <Link
-              href="/services"
+            </a>
+            <a
+              href="#services"
               className="block text-earth-clay hover:text-earth-terracotta transition-colors text-lg font-medium px-4"
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={(e) => handleSmoothScroll(e, 'services')}
             >
               Services
-            </Link>
-            <Link
-              href="/case-studies"
+            </a>
+            <a
+              href="#portfolio"
               className="block text-earth-clay hover:text-earth-terracotta transition-colors text-lg font-medium px-4"
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={(e) => handleSmoothScroll(e, 'portfolio')}
             >
-              Case Studies
-            </Link>
-            <Link
-              href="/about"
+              Portfolio
+            </a>
+            <a
+              href="#contact"
               className="block text-earth-clay hover:text-earth-terracotta transition-colors text-lg font-medium px-4"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              About
-            </Link>
-            <Link
-              href="/contact"
-              className="block text-earth-clay hover:text-earth-terracotta transition-colors text-lg font-medium px-4"
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={(e) => handleSmoothScroll(e, 'contact')}
             >
               Contact
-            </Link>
+            </a>
             <div className="px-4 pb-2">
               <Link
                 href="/contact"

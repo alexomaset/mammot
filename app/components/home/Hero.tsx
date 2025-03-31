@@ -19,7 +19,7 @@ export default function Hero() {
   }
 
   return (
-    <section className="relative min-h-screen flex items-center pt-16">
+    <section id="home" className="relative min-h-screen flex items-center pt-16">
       {/* Video Background with simplified overlay */}
       <div className="absolute inset-0 overflow-hidden">
         <video
@@ -53,9 +53,9 @@ export default function Hero() {
               <Image
                 src="/logo3.png"
                 alt="Mamot Logo"
-                width={450}
-                height={100}
-                className="w-64 h-auto mx-auto"
+                width={650}
+                height={200}
+                className="w-74 h-auto mx-auto"
                 priority
               />
             </motion.div>
@@ -78,7 +78,7 @@ export default function Hero() {
               className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
             >
               <Link
-                href="/contact"
+                href="/join"
                 className="bg-[#6D412A] text-white px-6 py-3 rounded-full font-medium hover:bg-[#7d4c32] transition-all"
               >
                 Join Our Journey

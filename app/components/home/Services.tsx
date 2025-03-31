@@ -67,7 +67,7 @@ export default function Services() {
   }
 
   return (
-    <section className="py-20 bg-gradient-to-b from-stone-50 to-amber-50">
+    <section id="services" className="py-20 bg-gradient-to-b from-stone-50 to-amber-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-amber-900 mb-4">Our Services</h2>
