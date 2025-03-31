@@ -24,7 +24,7 @@ export default function Footer() {
               <a href="#" className="text-earth-sand hover:text-earth-terracotta transition-colors">
                 <FaTiktok size={20} />
               </a>
-              <a href="#" className="text-earth-sand hover:text-earth-terracotta transition-colors">
+              <a href="https://www.instagram.com/mamot_by_muthusi?igsh=MTR0N2N1YTN6aHd2dQ%3D%3D&utm_source=qr" className="text-earth-sand hover:text-earth-terracotta transition-colors">
                 <FaInstagram size={20} />
               </a>
             </div>
