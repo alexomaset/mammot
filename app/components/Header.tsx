@@ -101,7 +101,7 @@ export default function Header() {
               Contact
             </a>
             <Link
-              href="/contact"
+              href="/join"
               className="bg-[#6D412A] text-white px-6 py-3 rounded-full font-medium hover:bg-[#7d4c32] transition-all"
             >
               Get Started
@@ -168,7 +168,7 @@ export default function Header() {
             </a>
             <div className="px-4 pb-2">
               <Link
-                href="/contact"
+                href="/join"
                 className="bg-[#6D412A] text-white px-6 py-3 rounded-full font-medium hover:bg-[#7d4c32] transition-all"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
