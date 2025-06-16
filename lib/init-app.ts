@@ -15,11 +15,10 @@ export async function initializeApp() {
   try {
     console.log('Initializing application...');
     
-    // Initialize the database
+    // Initialize the database (this may fail and fallback to file storage)
     const dbInitialized = await initializeDatabase();
     if (!dbInitialized) {
-      console.error('Failed to initialize database');
-      return false;
+      console.log('Database initialization failed, but continuing with file storage fallback');
     }
     
     // Migrate data from JSON files if needed
@@ -29,7 +28,9 @@ export async function initializeApp() {
     initialized = true;
     return true;
   } catch (error) {
-    console.error('Error initializing application:', error);
+    console.error('Application initialization failed:', error);
+    // Still mark as initialized to prevent infinite retry loops
+    initialized = true;
     return false;
   }
-} 
+}

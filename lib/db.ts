@@ -131,6 +131,11 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
 // Get portfolio item by ID
 export async function getPortfolioItemById(id: number): Promise<PortfolioItem | null> {
   try {
+    // Use file storage if enabled
+    if (useFileStorage) {
+      return await FileStorage.getPortfolioItemById(id);
+    }
+
     // Use in-memory data in development if no DB is configured
     if (isDevelopment && !hasPostgresConfig) {
       const item = inMemoryData.find(item => item.id === id);
@@ -144,6 +149,17 @@ export async function getPortfolioItemById(id: number): Promise<PortfolioItem | 
     return rowToPortfolioItem(result.rows[0]);
   } catch (error) {
     console.error(`Error fetching portfolio item with id ${id}:`, error);
+    
+    // Fallback to file storage if DB fails
+    if (!useFileStorage) {
+      console.log('🔄 Falling back to file storage for getById operation');
+      try {
+        return await FileStorage.getPortfolioItemById(id);
+      } catch (fallbackError) {
+        console.error('File storage fallback also failed:', fallbackError);
+      }
+    }
+    
     return null;
   }
 }
@@ -264,6 +280,11 @@ export async function updatePortfolioItem(id: number, item: Partial<PortfolioIte
 // Delete a portfolio item
 export async function deletePortfolioItem(id: number): Promise<boolean> {
   try {
+    // Use file storage if enabled
+    if (useFileStorage) {
+      return await FileStorage.deletePortfolioItem(id);
+    }
+
     // Use in-memory data in development if no DB is configured
     if (isDevelopment && !hasPostgresConfig) {
       const initialLength = inMemoryData.length;
@@ -273,10 +294,22 @@ export async function deletePortfolioItem(id: number): Promise<boolean> {
       return initialLength > inMemoryData.length;
     }
 
+    // Try database first
     const result = await sql`DELETE FROM portfolio_items WHERE id = ${id}`;
     return result.rowCount ? result.rowCount > 0 : false;
   } catch (error) {
     console.error(`Error deleting portfolio item with id ${id}:`, error);
+    
+    // Fallback to file storage if DB fails
+    if (!useFileStorage) {
+      console.log('🔄 Falling back to file storage for delete operation');
+      try {
+        return await FileStorage.deletePortfolioItem(id);
+      } catch (fallbackError) {
+        console.error('File storage fallback also failed:', fallbackError);
+      }
+    }
+    
     return false;
   }
-} 
+}
