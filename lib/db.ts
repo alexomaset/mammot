@@ -19,7 +19,22 @@ export async function initializeDatabase() {
     return true;
   }
 
+  // Skip database initialization if using file storage
+  if (useFileStorage) {
+    console.log('📁 Using file storage, skipping database initialization');
+    return true;
+  }
+
   try {
+    // Test database connection with timeout
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Database connection timeout')), 5000);
+    });
+
+    const connectionTest = sql`SELECT 1 as test`;
+    
+    await Promise.race([connectionTest, timeoutPromise]);
+
     // Create the portfolio_items table if it doesn't exist
     await sql`
       CREATE TABLE IF NOT EXISTS portfolio_items (
@@ -35,10 +50,11 @@ export async function initializeDatabase() {
       );
     `;
     
-    console.log('Database initialized successfully');
+    console.log('✅ Database initialized successfully');
     return true;
   } catch (error) {
-    console.error('Error initializing database:', error);
+    console.error('❌ Error initializing database:', error);
+    console.log('🔄 Will fallback to file storage for data persistence');
     return false;
   }
 }
