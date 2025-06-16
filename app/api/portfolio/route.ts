@@ -73,10 +73,15 @@ function verifyAdminAuth(request: NextRequest): { authorized: boolean; message?:
 // GET all portfolio items
 export async function GET(request: NextRequest) {
   try {
+    console.log('📖 Fetching portfolio items...');
     const portfolioItems = await getPortfolioItems();
+    console.log('✅ Portfolio items fetched successfully:', {
+      count: portfolioItems.length,
+      items: portfolioItems.map(item => ({ id: item.id, title: item.title, hasVideoUrl: !!item.videoUrl }))
+    });
     return NextResponse.json(portfolioItems);
   } catch (error) {
-    console.error('Error fetching portfolio items:', error);
+    console.error('❌ Error fetching portfolio items:', error);
     return NextResponse.json({ error: 'Failed to fetch portfolio items' }, { status: 500 });
   }
 }
@@ -91,10 +96,19 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+    console.log('📝 Creating portfolio item with data:', {
+      title: body.title,
+      category: body.category,
+      hasVideoUrl: !!body.videoUrl,
+      hasThumbnail: !!body.thumbnail,
+      videoUrlType: body.videoUrl?.startsWith('http') ? 'url' : 'file',
+      thumbnailType: body.thumbnail?.startsWith('http') ? 'url' : 'file'
+    });
 
     // Validate required fields
     const { title, videoUrl, thumbnail, category } = body;
     if (!title || !videoUrl || !thumbnail || !category) {
+      console.error('❌ Missing required fields:', { title: !!title, videoUrl: !!videoUrl, thumbnail: !!thumbnail, category: !!category });
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -109,8 +123,15 @@ export async function POST(request: NextRequest) {
     });
 
     if (!newItem) {
+      console.error('❌ Failed to create portfolio item in database');
       return NextResponse.json({ error: 'Failed to create portfolio item' }, { status: 500 });
     }
+
+    console.log('✅ Portfolio item created successfully:', {
+      id: newItem.id,
+      title: newItem.title,
+      hasVideoUrl: !!newItem.videoUrl
+    });
 
     return NextResponse.json(newItem, { status: 201 });
   } catch (error) {

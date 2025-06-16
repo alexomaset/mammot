@@ -79,15 +79,53 @@ const sampleContent: ContentItem[] = [
 const categories = ["All", "Travel", "Documentary", "Culture", "Nature", "Food"]
 
 export default function ContentPage() {
-  const [content, setContent] = useState<ContentItem[]>(sampleContent)
-  const [filteredContent, setFilteredContent] = useState<ContentItem[]>(sampleContent)
+  const [content, setContent] = useState<ContentItem[]>([])
+  const [filteredContent, setFilteredContent] = useState<ContentItem[]>([])
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [searchTerm, setSearchTerm] = useState("")
+  const [isLoading, setIsLoading] = useState(true)
   const [videoModal, setVideoModal] = useState<{ isOpen: boolean; url: string }>({
     isOpen: false,
     url: '',
   })
-  
+
+  // Fetch portfolio data from API
+  const fetchPortfolioData = async () => {
+    try {
+      setIsLoading(true)
+      const response = await fetch('/api/portfolio')
+      if (response.ok) {
+        const portfolioData = await response.json()
+        // Convert portfolio items to content items
+        const contentItems: ContentItem[] = portfolioData.map((item: any) => ({
+          id: item.id,
+          title: item.title,
+          category: item.category,
+          thumbnail: item.thumbnail,
+          videoUrl: item.videoUrl,
+          description: item.description || '',
+          date: item.createdAt || new Date().toISOString().split('T')[0]
+        }))
+        setContent(contentItems)
+      } else {
+        console.error('Failed to fetch portfolio data')
+        // Fallback to sample content if API fails
+        setContent(sampleContent)
+      }
+    } catch (error) {
+      console.error('Error fetching portfolio data:', error)
+      // Fallback to sample content if API fails
+      setContent(sampleContent)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Load portfolio data on component mount
+  useEffect(() => {
+    fetchPortfolioData()
+  }, [])
+
   // Filter content based on category and search term
   useEffect(() => {
     let result = content
@@ -108,17 +146,17 @@ export default function ContentPage() {
     
     setFilteredContent(result)
   }, [selectedCategory, searchTerm, content])
-  
+
   // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value)
   }
-  
+
   // Handle category selection
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category)
   }
-  
+
   // Open video modal
   const openVideoModal = (videoUrl: string) => {
     if (videoUrl) {
@@ -128,7 +166,7 @@ export default function ContentPage() {
       })
     }
   }
-  
+
   // Close video modal
   const closeVideoModal = () => {
     setVideoModal({
@@ -136,7 +174,7 @@ export default function ContentPage() {
       url: ''
     })
   }
-  
+
   return (
     <main className="min-h-screen pt-32 pb-20 bg-gradient-to-b from-[#f8f5f2] to-[#f0e9e4]">
       <div className="container mx-auto px-4">
@@ -144,7 +182,7 @@ export default function ContentPage() {
         <Link href="/" className="inline-flex items-center text-gray-600 hover:text-[#6D412A] transition-colors mb-8">
           <FaArrowLeft className="mr-2" /> Back to Home
         </Link>
-        
+
         {/* Page Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Our Content</h1>
@@ -152,51 +190,65 @@ export default function ContentPage() {
             Explore our collection of stories, documentaries, and visual journeys
           </p>
         </div>
-        
+
         {/* Search and Filter Bar */}
         <div className="bg-white rounded-2xl shadow-md p-6 mb-10">
           <div className="flex flex-col md:flex-row gap-6 items-center">
             {/* Search */}
-            <div className="relative flex-1 w-full">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <FaSearch className="text-gray-400" />
+            <div className="w-full md:w-1/2">
+              <div className="relative">
+                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search content..."
+                  className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#6D412A] transition-colors"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                />
               </div>
-              <input
-                type="text"
-                className="block w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#6D412A] focus:border-transparent"
-                placeholder="Search content..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-              />
             </div>
-            
+
             {/* Filter */}
             <div className="w-full md:w-auto">
               <div className="flex items-center gap-2 text-sm font-medium">
-                <FaFilter className="text-gray-600" />
-                <span>Filter by:</span>
+                <span className="text-gray-600">Filter by:</span>
+                <div className="flex flex-wrap gap-2">
+                  {categories.map((category) => (
+                    <button
+                      key={category}
+                      onClick={() => handleCategoryChange(category)}
+                      className={`px-4 py-2 rounded-full transition-colors ${
+                        selectedCategory === category
+                          ? 'bg-[#6D412A] text-white'
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2 mt-2">
-                {categories.map(category => (
-                  <button
-                    key={category}
-                    onClick={() => handleCategoryChange(category)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                      selectedCategory === category
-                        ? 'bg-[#6D412A] text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                    }`}
-                  >
-                    {category}
-                  </button>
-                ))}
-              </div>
+            </div>
+
+            {/* Refresh Button */}
+            <div className="w-full md:w-auto">
+              <button
+                onClick={fetchPortfolioData}
+                disabled={isLoading}
+                className="w-full md:w-auto bg-[#6D412A] text-white px-4 py-2 rounded-lg hover:bg-[#5A3422] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? 'Loading...' : 'Refresh'}
+              </button>
             </div>
           </div>
         </div>
-        
+
         {/* Content Grid */}
-        {filteredContent.length === 0 ? (
+        {isLoading ? (
+          <div className="bg-white rounded-2xl shadow-md p-10 text-center">
+            <p className="text-xl text-gray-600">Loading content...</p>
+          </div>
+        ) : filteredContent.length === 0 ? (
           <div className="bg-white rounded-2xl shadow-md p-10 text-center">
             <p className="text-xl text-gray-600">No content found matching your criteria.</p>
             <button
@@ -313,4 +365,4 @@ export default function ContentPage() {
       </div>
     </main>
   )
-} 
+}
