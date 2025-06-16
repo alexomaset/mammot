@@ -61,11 +61,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/services#content" className="text-gray-400 hover:text-white transition-colors">
-                  <li>
-                <Link href="/services#content" className="text-gray-400 hover:text-white transition-colors">
                 Video Editing
-                </Link>
-              </li>
                 </Link>
               </li>
             </ul>

@@ -1,13 +1,20 @@
 import { sql } from '@vercel/postgres';
+import * as FileStorage from './file-storage';
 
-// Force development mode without DB since we're seeing connection errors
-const isDevelopmentWithoutDB = true;
-console.log('🔄 FORCED DEVELOPMENT MODE: Using in-memory database');
+// Smart environment detection
+const isDevelopment = process.env.NODE_ENV === 'development';
+const hasPostgresConfig = !!(process.env.POSTGRES_URL || process.env.POSTGRES_PRISMA_URL);
+const useFileStorage = process.env.USE_FILE_STORAGE === 'true' || (!hasPostgresConfig && isDevelopment);
+
+console.log('🔄 Database Configuration:');
+console.log('- Environment:', process.env.NODE_ENV);
+console.log('- Postgres available:', hasPostgresConfig);
+console.log('- Using file storage:', useFileStorage);
 
 // Schema definition
 export async function initializeDatabase() {
   // Development fallback if no database is configured
-  if (isDevelopmentWithoutDB) {
+  if (isDevelopment && !hasPostgresConfig) {
     console.log('🧠 Using in-memory data storage as fallback');
     return true;
   }
@@ -80,8 +87,13 @@ export function rowToPortfolioItem(row: any): PortfolioItem {
 // Get all portfolio items
 export async function getPortfolioItems(): Promise<PortfolioItem[]> {
   try {
+    // Use file storage if enabled
+    if (useFileStorage) {
+      return await FileStorage.getPortfolioItems();
+    }
+    
     // Use in-memory data in development if no DB is configured
-    if (isDevelopmentWithoutDB) {
+    if (isDevelopment && !hasPostgresConfig) {
       return [...inMemoryData];
     }
 
@@ -89,7 +101,14 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
     return result.rows.map(rowToPortfolioItem);
   } catch (error) {
     console.error('Error fetching portfolio items:', error);
-    return isDevelopmentWithoutDB ? [...inMemoryData] : [];
+    
+    // Fallback to file storage on database error
+    if (!useFileStorage) {
+      console.log('🔄 Falling back to file storage due to database error');
+      return await FileStorage.getPortfolioItems();
+    }
+    
+    return isDevelopment && !hasPostgresConfig ? [...inMemoryData] : [];
   }
 }
 
@@ -97,7 +116,7 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
 export async function getPortfolioItemById(id: number): Promise<PortfolioItem | null> {
   try {
     // Use in-memory data in development if no DB is configured
-    if (isDevelopmentWithoutDB) {
+    if (isDevelopment && !hasPostgresConfig) {
       const item = inMemoryData.find(item => item.id === id);
       return item || null;
     }
@@ -116,8 +135,13 @@ export async function getPortfolioItemById(id: number): Promise<PortfolioItem | 
 // Create a new portfolio item
 export async function createPortfolioItem(item: Omit<PortfolioItem, 'id'>): Promise<PortfolioItem | null> {
   try {
+    // Use file storage if enabled
+    if (useFileStorage) {
+      return await FileStorage.createPortfolioItem(item);
+    }
+    
     // Use in-memory data in development if no DB is configured
-    if (isDevelopmentWithoutDB) {
+    if (isDevelopment && !hasPostgresConfig) {
       const newId = inMemoryData.length > 0 
         ? Math.max(...inMemoryData.map(item => item.id)) + 1 
         : 1;
@@ -154,6 +178,13 @@ export async function createPortfolioItem(item: Omit<PortfolioItem, 'id'>): Prom
     return rowToPortfolioItem(result.rows[0]);
   } catch (error) {
     console.error('Error creating portfolio item:', error);
+    
+    // Fallback to file storage on database error
+    if (!useFileStorage) {
+      console.log('🔄 Falling back to file storage due to database error');
+      return await FileStorage.createPortfolioItem(item);
+    }
+    
     return null;
   }
 }
@@ -162,7 +193,7 @@ export async function createPortfolioItem(item: Omit<PortfolioItem, 'id'>): Prom
 export async function updatePortfolioItem(id: number, item: Partial<PortfolioItem>): Promise<PortfolioItem | null> {
   try {
     // Use in-memory data in development if no DB is configured
-    if (isDevelopmentWithoutDB) {
+    if (isDevelopment && !hasPostgresConfig) {
       const index = inMemoryData.findIndex(item => item.id === id);
       if (index === -1) return null;
       
@@ -218,7 +249,7 @@ export async function updatePortfolioItem(id: number, item: Partial<PortfolioIte
 export async function deletePortfolioItem(id: number): Promise<boolean> {
   try {
     // Use in-memory data in development if no DB is configured
-    if (isDevelopmentWithoutDB) {
+    if (isDevelopment && !hasPostgresConfig) {
       const initialLength = inMemoryData.length;
       const newItems = inMemoryData.filter(item => item.id !== id);
       inMemoryData.length = 0;
