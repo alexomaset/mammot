@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verify } from 'jsonwebtoken';
-import { put } from '@vercel/blob';
+import { getSupabaseAdmin } from '@/lib/supabase';
 
 // Force development mode for local testing
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -12,22 +12,22 @@ export async function POST(request: NextRequest) {
     if (!isDevelopment) {
       // Get the token from the cookie for production
       const tokenCookie = request.cookies.get('admin_token');
-      
+
       if (!tokenCookie || !tokenCookie.value) {
         console.error('Upload unauthorized: No admin_token cookie found');
         return NextResponse.json({ error: 'Unauthorized - Please log in' }, { status: 401 });
       }
-      
+
       try {
         // Verify the JWT token from cookie
         const decoded = verify(tokenCookie.value, JWT_SECRET) as any;
-        
+
         // Check if the token contains admin role
         if (!decoded || decoded.role !== 'admin') {
           console.error('Upload unauthorized: Token invalid or not admin role', decoded);
           return NextResponse.json({ error: 'Unauthorized - Invalid credentials' }, { status: 401 });
         }
-        
+
         console.log('Upload authentication successful for user:', decoded.username);
       } catch (tokenError) {
         console.error('Upload unauthorized: Token verification failed', tokenError);
@@ -53,12 +53,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file size (10MB for images, 100MB for videos)
-    const maxSize = type === 'image' ? 10 * 1024 * 1024 : 100 * 1024 * 1024;
+    // Validate file size (10MB for images, 500MB for videos with Supabase)
+    const maxSize = type === 'image' ? 10 * 1024 * 1024 : 500 * 1024 * 1024;
     if (file.size > maxSize) {
       return NextResponse.json(
-        { 
-          error: `File too large. Maximum size is ${type === 'image' ? '10MB' : '100MB'}` 
+        {
+          error: `File too large. Maximum size is ${type === 'image' ? '10MB' : '500MB'}`
         },
         { status: 400 }
       );
@@ -72,8 +72,8 @@ export async function POST(request: NextRequest) {
 
     if (!validTypes[type].includes(file.type)) {
       return NextResponse.json(
-        { 
-          error: `Invalid file type. Allowed types for ${type} are: ${validTypes[type].join(', ')}` 
+        {
+          error: `Invalid file type. Allowed types for ${type} are: ${validTypes[type].join(', ')}`
         },
         { status: 400 }
       );
@@ -84,15 +84,36 @@ export async function POST(request: NextRequest) {
     const timestamp = Date.now();
     const fileNameBase = file.name.substring(0, 20).replace(/[^a-zA-Z0-9]/g, '_');
     const fileName = `${timestamp}-${fileNameBase}.${fileExt}`;
-    const path = `${type}s/${fileName}`;
+    const bucketName = type === 'video' ? 'portfolio-videos' : 'portfolio-images';
 
-    // Upload to Vercel Blob Storage
-    const blob = await put(path, file, {
-      access: 'public',
-    });
+    // Convert File to ArrayBuffer then to Buffer
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+
+    // Upload to Supabase Storage
+    const supabase = getSupabaseAdmin();
+    const { data, error } = await supabase.storage
+      .from(bucketName)
+      .upload(fileName, buffer, {
+        contentType: file.type,
+        upsert: false,
+      });
+
+    if (error) {
+      console.error('Supabase upload error:', error);
+      return NextResponse.json(
+        { error: `Failed to upload: ${error.message}` },
+        { status: 500 }
+      );
+    }
+
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from(bucketName)
+      .getPublicUrl(fileName);
 
     return NextResponse.json({
-      url: blob.url,
+      url: publicUrl,
       fileName,
       success: true
     });
@@ -100,7 +121,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error uploading file:', error);
     return NextResponse.json(
-      { error: 'Failed to upload file' },
+      { error: error instanceof Error ? error.message : 'Failed to upload file' },
       { status: 500 }
     );
   }
