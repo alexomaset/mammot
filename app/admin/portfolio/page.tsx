@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { FaPlus, FaEdit, FaTrash, FaEye, FaUpload, FaTimes, FaCheck, FaSpinner, FaVideo, FaImage } from 'react-icons/fa'
+import { upload } from '@vercel/blob/client'
 
 interface PortfolioItem {
   id: number
@@ -76,77 +77,54 @@ export default function AdminPortfolio() {
     fetchPortfolioItems()
   }, [])
 
-  // Handle file upload
+  // Handle file upload - Using Vercel Blob client-side upload
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: 'video' | 'image') => {
     const file = e.target.files?.[0]
     if (!file) return
-    
+
     try {
       // Reset error state
       setUploadError(prev => ({ ...prev, [type]: '' }))
-      
+
       // Set uploading state
       setIsUploading(prev => ({ ...prev, [type]: true }))
       setUploadProgress(prev => ({ ...prev, [type]: 0 }))
-      
-      // Create form data
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('type', type)
-      
-      // Upload file with progress tracking
-      const xhr = new XMLHttpRequest()
-      
-      xhr.open('POST', '/api/upload', true)
-      
-      xhr.upload.onprogress = (event) => {
-        if (event.lengthComputable) {
-          const progress = Math.round((event.loaded / event.total) * 100)
-          setUploadProgress(prev => ({ ...prev, [type]: progress }))
-        }
+
+      // Generate filename with timestamp
+      const timestamp = Date.now()
+      const fileExt = file.name.split('.').pop()?.toLowerCase() || ''
+      const fileNameBase = file.name.substring(0, 20).replace(/[^a-zA-Z0-9]/g, '_')
+      const filename = `${type}s/${timestamp}-${fileNameBase}.${fileExt}`
+
+      // Upload directly to Vercel Blob using client-side upload
+      const blob = await upload(filename, file, {
+        access: 'public',
+        handleUploadUrl: '/api/upload-url',
+        onUploadProgress: (progress) => {
+          const percentage = Math.round((progress.loaded / progress.total) * 100)
+          setUploadProgress(prev => ({ ...prev, [type]: percentage }))
+        },
+      })
+
+      // Update the form with the uploaded file URL
+      if (type === 'video') {
+        setEditingItem(prev => prev ? { ...prev, videoUrl: blob.url } : null)
+      } else {
+        setEditingItem(prev => prev ? { ...prev, thumbnail: blob.url } : null)
       }
-      
-      xhr.onload = () => {
-        if (xhr.status === 200) {
-          const response = JSON.parse(xhr.responseText)
-          
-          // Update the form with the uploaded file URL
-          if (type === 'video') {
-            setEditingItem(prev => prev ? { ...prev, videoUrl: response.url } : null)
-          } else {
-            setEditingItem(prev => prev ? { ...prev, thumbnail: response.url } : null)
-          }
-          
-          // Reset upload state
-          setIsUploading(prev => ({ ...prev, [type]: false }))
-          setUploadProgress(prev => ({ ...prev, [type]: 100 }))
-          
-          // Show success message
-          setSuccessMessage(`${type.charAt(0).toUpperCase() + type.slice(1)} uploaded successfully`)
-          setTimeout(() => setSuccessMessage(null), 3000)
-        } else {
-          // Handle error
-          let errorMessage = 'Upload failed'
-          try {
-            const errorResponse = JSON.parse(xhr.responseText)
-            errorMessage = errorResponse.error || errorMessage
-          } catch (e) {}
-          
-          setUploadError(prev => ({ ...prev, [type]: errorMessage }))
-          setIsUploading(prev => ({ ...prev, [type]: false }))
-        }
-      }
-      
-      xhr.onerror = () => {
-        setUploadError(prev => ({ ...prev, [type]: 'Network error occurred' }))
-        setIsUploading(prev => ({ ...prev, [type]: false }))
-      }
-      
-      xhr.send(formData)
-      
+
+      // Reset upload state
+      setIsUploading(prev => ({ ...prev, [type]: false }))
+      setUploadProgress(prev => ({ ...prev, [type]: 100 }))
+
+      // Show success message
+      setSuccessMessage(`${type.charAt(0).toUpperCase() + type.slice(1)} uploaded successfully`)
+      setTimeout(() => setSuccessMessage(null), 3000)
+
     } catch (error) {
       console.error(`Error uploading ${type}:`, error)
-      setUploadError(prev => ({ ...prev, [type]: 'Upload failed' }))
+      const errorMessage = error instanceof Error ? error.message : 'Upload failed'
+      setUploadError(prev => ({ ...prev, [type]: errorMessage }))
       setIsUploading(prev => ({ ...prev, [type]: false }))
     }
   }
