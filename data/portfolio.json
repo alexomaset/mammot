@@ -1,27 +1,12 @@
 [
   {
     "id": 1,
-    "title": "Adventure in Paradise",
-    "category": "Travel & Lifestyle",
-    "videoUrl": "https://player.vimeo.com/external/368763065.sd.mp4?s=308c8c3688ac49b3b307c54f0fa2c894ff2accf2&profile_id=139&oauth2_token_id=57447761",
-    "thumbnail": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000&auto=format&fit=crop",
-    "description": "Exploring hidden beaches and tropical destinations",
-    "tags": [
-      "travel",
-      "nature",
-      "adventure"
-    ],
-    "createdAt": "2025-03-24T14:06:04.143Z",
-    "updatedAt": "2025-03-24T14:12:16.552Z"
-  },
-  {
-    "id": 2,
-    "title": "Casa Kalimbini",
-    "category": "Travel and Hospitaity",
-    "videoUrl": "https://1l82oc3jiermhald.public.blob.vercel-storage.com/videos/1767866713543-Events_mov-TPg9obWK2aDq1KzZaeIQ4i4sIg4PNA.mov",
-    "thumbnail": "https://1l82oc3jiermhald.public.blob.vercel-storage.com/images/1767866741457-Screenshot_2025_11_0-Vs4ZT5CbqYdHNLf4fUMXG2yQd3OVpd.png",
+    "title": "Lifestyle 1",
+    "category": "Lifestyle",
+    "videoUrl": "/uploads/videos/1767886339866-Lifestyle__3__mp4.mp4",
+    "thumbnail": "https://images.unsplash.com/photo-1513094735237-8f2714d57c13?w=1280&h=720&fit=crop",
     "description": "",
     "tags": [],
-    "createdAt": "2026-01-08T10:06:55.636Z"
+    "createdAt": "2026-01-08T15:32:29.727Z"
   }
 ]

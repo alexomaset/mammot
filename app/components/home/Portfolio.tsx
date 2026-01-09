@@ -142,14 +142,14 @@ export default function Portfolio() {
         {/* Category Filter */}
         {!isLoading && !error && portfolioItems.length > 0 && (
           <>
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.4 }}
               className="flex flex-wrap justify-center gap-4 mb-12"
             >
-              {allCategories.map((category, index) => (
+              {allCategories.map((category) => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
@@ -241,18 +241,23 @@ export default function Portfolio() {
             className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4"
             onClick={() => setVideoModal({ isOpen: false, url: '' })}
           >
-            <div className="relative w-full max-w-4xl mx-auto">
+            <div className="relative w-full max-w-5xl mx-auto">
               <video
                 autoPlay
                 controls
-                className="w-full rounded-lg shadow-2xl"
+                playsInline
+                preload="metadata"
+                className="w-full max-h-[85vh] rounded-lg shadow-2xl bg-black"
                 src={videoModal.url}
                 onError={(e) => {
                   console.error('Video loading error:', e)
-                  setError('Failed to load video. Please try again later.')
-                  setVideoModal({ isOpen: false, url: '' })
+                  alert('Failed to load video. The file format may not be supported.')
                 }}
-              />
+              >
+                <source src={videoModal.url} type="video/mp4" />
+                <source src={videoModal.url} type="video/quicktime" />
+                Your browser does not support the video tag.
+              </video>
               <button
                 onClick={(e) => {
                   e.stopPropagation()

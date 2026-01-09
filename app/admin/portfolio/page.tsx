@@ -16,6 +16,30 @@ interface PortfolioItem {
   updatedAt?: string
 }
 
+// Predefined categories with default thumbnails
+const CATEGORIES = [
+  {
+    name: 'Travel and Hospitality',
+    thumbnail: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1280&h=720&fit=crop'
+  },
+  {
+    name: 'Education and Wellness',
+    thumbnail: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1280&h=720&fit=crop'
+  },
+  {
+    name: 'Events',
+    thumbnail: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1280&h=720&fit=crop'
+  },
+  {
+    name: 'Media and Brands',
+    thumbnail: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1280&h=720&fit=crop'
+  },
+  {
+    name: 'Lifestyle',
+    thumbnail: 'https://images.unsplash.com/photo-1513094735237-8f2714d57c13?w=1280&h=720&fit=crop'
+  }
+]
+
 const emptyItem: Omit<PortfolioItem, 'id'> = {
   title: '',
   category: '',
@@ -51,7 +75,6 @@ export default function AdminPortfolio() {
   
   // File input refs
   const videoInputRef = useRef<HTMLInputElement>(null)
-  const imageInputRef = useRef<HTMLInputElement>(null)
 
   // Fetch portfolio items
   const fetchPortfolioItems = async () => {
@@ -231,24 +254,34 @@ export default function AdminPortfolio() {
     }
   }
 
+  // Handle category change - automatically set thumbnail
+  const handleCategoryChange = (category: string) => {
+    const selectedCategory = CATEGORIES.find(cat => cat.name === category)
+    setEditingItem({
+      ...editingItem,
+      category: category,
+      thumbnail: selectedCategory?.thumbnail || ''
+    })
+  }
+
   // Handle tag management
   const handleAddTag = () => {
     if (!tagInput.trim() || !editingItem) return
-    
+
     setEditingItem({
       ...editingItem,
       tags: [...(editingItem.tags || []), tagInput.trim()]
     })
-    
+
     setTagInput('')
   }
-  
+
   const handleRemoveTag = (index: number) => {
     if (!editingItem) return
-    
+
     const newTags = [...(editingItem.tags || [])]
     newTags.splice(index, 1)
-    
+
     setEditingItem({
       ...editingItem,
       tags: newTags
@@ -347,14 +380,24 @@ export default function AdminPortfolio() {
                       <label className="block text-sm font-medium text-gray-700 mb-1">
                         Category <span className="text-red-500">*</span>
                       </label>
-                      <input
-                        type="text"
+                      <select
                         value={editingItem?.category || ''}
-                        onChange={(e) => setEditingItem({...editingItem, category: e.target.value})}
+                        onChange={(e) => handleCategoryChange(e.target.value)}
                         className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#6D412A] focus:border-transparent"
-                        placeholder="e.g. Travel & Lifestyle"
                         required
-                      />
+                      >
+                        <option value="">Select a category...</option>
+                        {CATEGORIES.map((cat) => (
+                          <option key={cat.name} value={cat.name}>
+                            {cat.name}
+                          </option>
+                        ))}
+                      </select>
+                      {editingItem?.category && (
+                        <p className="mt-1 text-xs text-gray-500">
+                          Thumbnail: {CATEGORIES.find(c => c.name === editingItem.category)?.thumbnail}
+                        </p>
+                      )}
                     </div>
                     
                     {/* Video Upload */}
@@ -435,83 +478,36 @@ export default function AdminPortfolio() {
                       </div>
                     </div>
                     
-                    {/* Thumbnail Upload */}
+                    {/* Thumbnail Preview (Auto-assigned based on category) */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Thumbnail <span className="text-red-500">*</span>
+                        Thumbnail Preview
                       </label>
-                      
+
                       <div className="space-y-2">
-                        {/* Current Thumbnail Display */}
-                        {editingItem?.thumbnail && (
-                          <div className="flex items-center gap-2">
-                            <div className="h-16 w-28 bg-gray-200 rounded overflow-hidden">
-                              <img 
-                                src={editingItem.thumbnail} 
-                                alt="Thumbnail" 
+                        {editingItem?.thumbnail ? (
+                          <div className="flex items-center gap-3">
+                            <div className="h-20 w-32 bg-gray-200 rounded overflow-hidden border-2 border-gray-300">
+                              <img
+                                src={editingItem.thumbnail}
+                                alt="Category Thumbnail"
                                 className="h-full w-full object-cover"
                                 onError={(e) => {
-                                  e.currentTarget.src = 'https://via.placeholder.com/150?text=No+Image'
+                                  e.currentTarget.src = 'https://via.placeholder.com/200x120?text=Thumbnail'
                                 }}
                               />
                             </div>
-                            <button
-                              type="button"
-                              onClick={() => setEditingItem({...editingItem, thumbnail: ''})}
-                              className="text-gray-500 hover:text-red-500"
-                            >
-                              <FaTimes size={14} />
-                            </button>
-                          </div>
-                        )}
-                        
-                        {/* Upload UI */}
-                        {!editingItem?.thumbnail && (
-                          <div className="flex flex-col gap-2">
-                            <div className="flex gap-2">
-                              <input
-                                type="url"
-                                value={editingItem?.thumbnail || ''}
-                                onChange={(e) => setEditingItem({...editingItem, thumbnail: e.target.value})}
-                                className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#6D412A] focus:border-transparent"
-                                placeholder="Enter thumbnail URL"
-                              />
-                              
-                              <div className="relative">
-                                <input
-                                  ref={imageInputRef}
-                                  type="file"
-                                  className="sr-only"
-                                  accept="image/*"
-                                  onChange={(e) => handleFileUpload(e, 'image')}
-                                  disabled={isUploading.image}
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => imageInputRef.current?.click()}
-                                  className="bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors flex items-center gap-1"
-                                  disabled={isUploading.image}
-                                >
-                                  {isUploading.image ? <FaSpinner className="animate-spin" /> : <FaUpload />} 
-                                  Upload
-                                </button>
-                              </div>
+                            <div className="text-sm text-gray-600">
+                              <FaImage className="inline mr-1" />
+                              Auto-assigned for "{editingItem.category}"
                             </div>
-                            
-                            {/* Upload Progress */}
-                            {isUploading.image && (
-                              <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                <div 
-                                  className="bg-[#6D412A] h-2.5 rounded-full" 
-                                  style={{ width: `${uploadProgress.image}%` }}
-                                ></div>
-                              </div>
-                            )}
-                            
-                            {/* Upload Error */}
-                            {uploadError.image && (
-                              <p className="text-red-500 text-sm">{uploadError.image}</p>
-                            )}
+                          </div>
+                        ) : (
+                          <div className="p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 text-center">
+                            <FaImage className="mx-auto text-gray-400 text-2xl mb-2" />
+                            <p className="text-sm text-gray-500">
+                              Select a category to see the thumbnail
+                            </p>
                           </div>
                         )}
                       </div>

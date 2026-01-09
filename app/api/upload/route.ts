@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { verify } from 'jsonwebtoken';
-import { getSupabaseAdmin } from '@/lib/supabase';
+import { put } from '@vercel/blob';
+import { writeFile, mkdir } from 'fs/promises';
+import path from 'path';
 
 // Force development mode for local testing
 const isDevelopment = process.env.NODE_ENV === 'development';
@@ -53,12 +55,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file size (10MB for images, 500MB for videos with Supabase)
-    const maxSize = type === 'image' ? 10 * 1024 * 1024 : 500 * 1024 * 1024;
+    // Validate file size (10MB for images, 100MB for videos in production, unlimited in dev)
+    const maxSize = isDevelopment
+      ? Infinity // No limit in development
+      : (type === 'image' ? 10 * 1024 * 1024 : 100 * 1024 * 1024);
+
     if (file.size > maxSize) {
       return NextResponse.json(
         {
-          error: `File too large. Maximum size is ${type === 'image' ? '10MB' : '500MB'}`
+          error: `File too large. Maximum size is ${type === 'image' ? '10MB' : '100MB'}`
         },
         { status: 400 }
       );
@@ -84,44 +89,49 @@ export async function POST(request: NextRequest) {
     const timestamp = Date.now();
     const fileNameBase = file.name.substring(0, 20).replace(/[^a-zA-Z0-9]/g, '_');
     const fileName = `${timestamp}-${fileNameBase}.${fileExt}`;
-    const bucketName = type === 'video' ? 'portfolio-videos' : 'portfolio-images';
 
-    // Convert File to ArrayBuffer then to Buffer
-    const arrayBuffer = await file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    if (isDevelopment) {
+      // Development: Save to local filesystem (no size limit!)
+      const uploadDir = path.join(process.cwd(), 'public', 'uploads', `${type}s`);
+      const filePath = path.join(uploadDir, fileName);
 
-    // Upload to Supabase Storage
-    const supabase = getSupabaseAdmin();
-    const { data, error } = await supabase.storage
-      .from(bucketName)
-      .upload(fileName, buffer, {
-        contentType: file.type,
-        upsert: false,
+      // Create directory if it doesn't exist
+      await mkdir(uploadDir, { recursive: true });
+
+      // Convert File to Buffer and save
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      await writeFile(filePath, buffer);
+
+      // Return local URL
+      const url = `/uploads/${type}s/${fileName}`;
+      console.log(`✅ Uploaded ${type} to local storage: ${url} (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
+
+      return NextResponse.json({
+        url,
+        fileName,
+        success: true
+      });
+    } else {
+      // Production: Upload to Vercel Blob Storage
+      const blobPath = `${type}s/${fileName}`;
+      const blob = await put(blobPath, file, {
+        access: 'public',
       });
 
-    if (error) {
-      console.error('Supabase upload error:', error);
-      return NextResponse.json(
-        { error: `Failed to upload: ${error.message}` },
-        { status: 500 }
-      );
+      console.log(`✅ Uploaded ${type} to Vercel Blob: ${blob.url}`);
+
+      return NextResponse.json({
+        url: blob.url,
+        fileName,
+        success: true
+      });
     }
-
-    // Get public URL
-    const { data: { publicUrl } } = supabase.storage
-      .from(bucketName)
-      .getPublicUrl(fileName);
-
-    return NextResponse.json({
-      url: publicUrl,
-      fileName,
-      success: true
-    });
 
   } catch (error) {
     console.error('Error uploading file:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to upload file' },
+      { error: 'Failed to upload file' },
       { status: 500 }
     );
   }
