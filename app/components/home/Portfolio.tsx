@@ -15,7 +15,7 @@ interface PortfolioItem {
 }
 
 export default function Portfolio() {
-  const [selectedCategory, setSelectedCategory] = useState<string>('all')
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [portfolioItems, setPortfolioItems] = useState<PortfolioItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -23,6 +23,40 @@ export default function Portfolio() {
     isOpen: false,
     url: '',
   })
+
+  // Category folder data with icons
+  const categoryFolders = [
+    {
+      name: 'Travel and Hospitality',
+      icon: '✈️',
+      color: 'from-blue-500 to-blue-600',
+      thumbnail: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&h=600&fit=crop'
+    },
+    {
+      name: 'Education and Wellness',
+      icon: '📚',
+      color: 'from-green-500 to-green-600',
+      thumbnail: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=600&fit=crop'
+    },
+    {
+      name: 'Events',
+      icon: '🎉',
+      color: 'from-red-500 to-red-600',
+      thumbnail: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&h=600&fit=crop'
+    },
+    {
+      name: 'Media and Brands',
+      icon: '📺',
+      color: 'from-purple-500 to-purple-600',
+      thumbnail: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=800&h=600&fit=crop'
+    },
+    {
+      name: 'Lifestyle',
+      icon: '☕',
+      color: 'from-orange-500 to-orange-600',
+      thumbnail: 'https://images.unsplash.com/photo-1513094735237-8f2714d57c13?w=800&h=600&fit=crop'
+    }
+  ]
 
   // Placeholder data for development when API fails
   const placeholderItems: PortfolioItem[] = [
@@ -85,14 +119,15 @@ export default function Portfolio() {
     fetchPortfolioItems()
   }, [])
 
-  // Extract unique categories from portfolio items
-  const allCategories = portfolioItems.length > 0
-    ? ['all', ...Array.from(new Set(portfolioItems.map(item => item.category)))]
-    : ['all']
+  // Get video count per category
+  const getCategoryCount = (categoryName: string) => {
+    return portfolioItems.filter(item => item.category === categoryName).length
+  }
 
-  const filteredItems = selectedCategory === 'all' 
-    ? portfolioItems 
-    : portfolioItems.filter(item => item.category === selectedCategory)
+  // Get videos for selected category
+  const categoryVideos = selectedCategory
+    ? portfolioItems.filter(item => item.category === selectedCategory)
+    : []
 
   return (
     <div id="portfolio" className="py-20 bg-gray-50">
@@ -139,36 +174,96 @@ export default function Portfolio() {
           </div>
         )}
 
-        {/* Category Filter */}
-        {!isLoading && !error && portfolioItems.length > 0 && (
+        {/* Back Button (when viewing category) */}
+        {selectedCategory && (
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="mb-8"
+          >
+            <button
+              onClick={() => setSelectedCategory(null)}
+              className="flex items-center gap-2 text-earth-terracotta hover:text-earth-rust font-medium transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Back to Folders
+            </button>
+          </motion.div>
+        )}
+
+        {/* Folder Grid (when no category selected) */}
+        {!isLoading && !error && portfolioItems.length > 0 && !selectedCategory && (
+          <motion.div
+            layout
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {categoryFolders.map((folder, index) => {
+              const count = getCategoryCount(folder.name)
+              if (count === 0) return null // Hide empty folders
+
+              return (
+                <motion.div
+                  key={folder.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  onClick={() => setSelectedCategory(folder.name)}
+                  className="group cursor-pointer"
+                >
+                  <div className="relative rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 bg-white">
+                    {/* Folder Thumbnail Background */}
+                    <div className="relative h-64 overflow-hidden">
+                      <div
+                        className="absolute inset-0 bg-cover bg-center transform transition-transform duration-300 group-hover:scale-110"
+                        style={{ backgroundImage: `url(${folder.thumbnail})` }}
+                      />
+                      <div className={`absolute inset-0 bg-gradient-to-br ${folder.color} opacity-70 group-hover:opacity-60 transition-opacity`} />
+
+                      {/* Folder Icon */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="text-8xl opacity-90 transform group-hover:scale-110 transition-transform">
+                          {folder.icon}
+                        </div>
+                      </div>
+
+                      {/* Video Count Badge */}
+                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
+                        <span className="text-sm font-bold text-gray-800">{count} {count === 1 ? 'Video' : 'Videos'}</span>
+                      </div>
+                    </div>
+
+                    {/* Folder Info */}
+                    <div className="p-6 text-center">
+                      <h3 className="text-2xl font-bold text-gray-800 mb-2">{folder.name}</h3>
+                      <p className="text-gray-600">Click to explore</p>
+                    </div>
+                  </div>
+                </motion.div>
+              )
+            })}
+          </motion.div>
+        )}
+
+        {/* Videos Grid (when category selected) */}
+        {!isLoading && !error && selectedCategory && (
           <>
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="flex flex-wrap justify-center gap-4 mb-12"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="mb-6"
             >
-              {allCategories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                    selectedCategory === category
-                      ? 'bg-earth-terracotta text-earth-light shadow-lg shadow-earth-terracotta/30'
-                      : 'bg-earth-light text-earth-clay hover:bg-earth-beige'
-                  }`}
-                >
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
-                </button>
-              ))}
+              <h3 className="text-3xl font-bold text-center mb-2">{selectedCategory}</h3>
+              <p className="text-center text-gray-600">{categoryVideos.length} {categoryVideos.length === 1 ? 'Video' : 'Videos'}</p>
             </motion.div>
 
-            {/* Portfolio Grid */}
-            <motion.div 
+            <motion.div
               layout
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredItems.map((item, index) => (
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
+              {categoryVideos.map((item, index) => (
                 <motion.div
                   key={item.id}
                   initial={{ opacity: 0, y: 20 }}

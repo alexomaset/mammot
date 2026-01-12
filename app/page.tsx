@@ -6,6 +6,7 @@ import Testimonials from '@/app/components/home/Testimonials'
 import CallToAction from '@/app/components/home/CallToAction'
 import Portfolio from './components/home/Portfolio'
 import Contact from './components/home/Contact'
+import Brands from './components/home/Brands'
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
       <Hero />
       {/* <FeaturedWork /> */}
       <Portfolio />
+      <Brands />
       <Services />
       {/* <Testimonials /> */}
       <CallToAction />
