@@ -7,27 +7,27 @@ const brands = [
   {
     id: 1,
     name: 'Yungi',
-    image: '/images/brands/IMG_5520.PNG',
+    image: '/images/brands/yungi.PNG',
   },
   {
     id: 2,
     name: 'Zawadi',
-    image: '/images/brands/WhatsApp Image 2026-01-08 at 3.10.15 PM.jpeg',
+    image: '/images/brands/zawadi.jpeg',
   },
   {
     id: 3,
     name: 'Casa',
-    image: '/images/brands/WhatsApp Image 2026-01-08 at 3.11.13 PM.jpeg',
+    image: '/images/brands/casa.jpeg',
   },
   {
     id: 4,
     name: 'Kijiji',
-    image: '/images/brands/WhatsApp Image 2026-01-08 at 3.12.14 PM.jpeg',
+    image: '/images/brands/kijiji.jpeg',
   },
   {
     id: 5,
     name: 'Headway',
-    image: '/images/brands/IMG_2472.PNG',
+    image: '/images/brands/headway.jpeg',
   },
   {
     id: 6,
@@ -37,7 +37,7 @@ const brands = [
   {
     id: 7,
     name: 'Ene',
-    image: '/images/brands/WhatsApp Image 2026-01-08 at 3.26.11 PM.jpeg',
+    image: '/images/brands/ene.PNG',
   },
 ]
 
@@ -68,7 +68,7 @@ export default function Brands() {
         </div>
 
         {/* Brands Grid */}
-        <div className="grid grid-cols-2 gap-8 md:gap-12 items-center max-w-4xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-10 lg:gap-12 items-center justify-items-center">
           {brands.map((brand, index) => (
             <motion.div
               key={brand.id}
@@ -76,9 +76,9 @@ export default function Brands() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="group relative"
+              className="group relative w-full"
             >
-              <div className="relative aspect-[4/3] bg-gray-50 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 p-6 flex items-center justify-center">
+              <div className="relative aspect-[3/2] bg-gray-50 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 p-8 flex items-center justify-center">
                 <div className="relative w-full h-full">
                   <Image
                     src={brand.image}

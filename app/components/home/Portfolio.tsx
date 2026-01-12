@@ -220,14 +220,7 @@ export default function Portfolio() {
                         className="absolute inset-0 bg-cover bg-center transform transition-transform duration-300 group-hover:scale-110"
                         style={{ backgroundImage: `url(${folder.thumbnail})` }}
                       />
-                      <div className={`absolute inset-0 bg-gradient-to-br ${folder.color} opacity-70 group-hover:opacity-60 transition-opacity`} />
-
-                      {/* Folder Icon */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-8xl opacity-90 transform group-hover:scale-110 transition-transform">
-                          {folder.icon}
-                        </div>
-                      </div>
+                      <div className={`absolute inset-0 bg-gradient-to-br ${folder.color} opacity-40 group-hover:opacity-30 transition-opacity`} />
 
                       {/* Video Count Badge */}
                       <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
