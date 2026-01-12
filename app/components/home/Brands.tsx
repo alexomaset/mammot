@@ -6,32 +6,37 @@ import Image from 'next/image'
 const brands = [
   {
     id: 1,
-    name: 'Brand 1',
+    name: 'Yungi',
     image: '/images/brands/IMG_5520.PNG',
   },
   {
     id: 2,
-    name: 'Brand 2',
+    name: 'Zawadi',
     image: '/images/brands/WhatsApp Image 2026-01-08 at 3.10.15 PM.jpeg',
   },
   {
     id: 3,
-    name: 'Brand 3',
+    name: 'Casa',
     image: '/images/brands/WhatsApp Image 2026-01-08 at 3.11.13 PM.jpeg',
   },
   {
     id: 4,
-    name: 'Brand 4',
+    name: 'Kijiji',
     image: '/images/brands/WhatsApp Image 2026-01-08 at 3.12.14 PM.jpeg',
   },
   {
     id: 5,
-    name: 'Brand 5',
+    name: 'Headway',
     image: '/images/brands/IMG_2472.PNG',
   },
   {
     id: 6,
-    name: 'Brand 6',
+    name: 'Mamy Mbuta',
+    image: '/images/brands/mbuta.png',
+  },
+  {
+    id: 7,
+    name: 'Ene',
     image: '/images/brands/WhatsApp Image 2026-01-08 at 3.26.11 PM.jpeg',
   },
 ]
@@ -63,7 +68,7 @@ export default function Brands() {
         </div>
 
         {/* Brands Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 items-center">
+        <div className="grid grid-cols-2 gap-8 md:gap-12 items-center max-w-4xl mx-auto">
           {brands.map((brand, index) => (
             <motion.div
               key={brand.id}
@@ -79,7 +84,7 @@ export default function Brands() {
                     src={brand.image}
                     alt={brand.name}
                     fill
-                    className="object-contain filter grayscale group-hover:grayscale-0 transition-all duration-300 opacity-70 group-hover:opacity-100"
+                    className="object-contain transition-all duration-300"
                     sizes="(max-width: 768px) 50vw, 25vw"
                   />
                 </div>

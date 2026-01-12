@@ -30,31 +30,31 @@ export default function Portfolio() {
       name: 'Travel and Hospitality',
       icon: '✈️',
       color: 'from-blue-500 to-blue-600',
-      thumbnail: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&h=600&fit=crop'
+      thumbnail: '/images/newthumbnails/travel.JPG'
     },
     {
       name: 'Education and Wellness',
       icon: '📚',
       color: 'from-green-500 to-green-600',
-      thumbnail: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&h=600&fit=crop'
+      thumbnail: '/images/newthumbnails/education.JPG'
     },
     {
       name: 'Events',
       icon: '🎉',
       color: 'from-red-500 to-red-600',
-      thumbnail: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&h=600&fit=crop'
+      thumbnail: '/images/newthumbnails/event.JPG'
     },
     {
       name: 'Media and Brands',
       icon: '📺',
       color: 'from-purple-500 to-purple-600',
-      thumbnail: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=800&h=600&fit=crop'
+      thumbnail: '/images/newthumbnails/media.JPG'
     },
     {
       name: 'Lifestyle',
       icon: '☕',
       color: 'from-orange-500 to-orange-600',
-      thumbnail: 'https://images.unsplash.com/photo-1513094735237-8f2714d57c13?w=800&h=600&fit=crop'
+      thumbnail: '/images/newthumbnails/lifestyle.JPG'
     }
   ]
 

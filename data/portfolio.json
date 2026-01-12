@@ -48,5 +48,15 @@
     "description": "",
     "tags": [],
     "createdAt": "2026-01-12T14:05:27.476Z"
+  },
+  {
+    "id": 6,
+    "title": "Travel",
+    "category": "Travel and Hospitality",
+    "videoUrl": "https://1l82oc3jiermhald.public.blob.vercel-storage.com/videos/1768227075761-Travel_and_hospitali-UIGjb196aQAIUSrgiCpqlkKwYV0jrU.mp4",
+    "thumbnail": "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1280&h=720&fit=crop",
+    "description": "",
+    "tags": [],
+    "createdAt": "2026-01-12T14:11:38.626Z"
   }
 ]

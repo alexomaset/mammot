@@ -21,23 +21,23 @@ interface PortfolioItem {
 const CATEGORIES = [
   {
     name: 'Travel and Hospitality',
-    thumbnail: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1280&h=720&fit=crop'
+    thumbnail: '/images/newthumbnails/travel.JPG'
   },
   {
     name: 'Education and Wellness',
-    thumbnail: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1280&h=720&fit=crop'
+    thumbnail: '/images/newthumbnails/education.JPG'
   },
   {
     name: 'Events',
-    thumbnail: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1280&h=720&fit=crop'
+    thumbnail: '/images/newthumbnails/event.JPG'
   },
   {
     name: 'Media and Brands',
-    thumbnail: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1280&h=720&fit=crop'
+    thumbnail: '/images/newthumbnails/media.JPG'
   },
   {
     name: 'Lifestyle',
-    thumbnail: 'https://images.unsplash.com/photo-1513094735237-8f2714d57c13?w=1280&h=720&fit=crop'
+    thumbnail: '/images/newthumbnails/lifestyle.JPG'
   }
 ]
 
