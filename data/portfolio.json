@@ -28,5 +28,25 @@
     "description": "",
     "tags": [],
     "createdAt": "2026-01-12T13:38:50.438Z"
+  },
+  {
+    "id": 4,
+    "title": "Travel",
+    "category": "Travel and Hospitality",
+    "videoUrl": "https://1l82oc3jiermhald.public.blob.vercel-storage.com/videos/1768226413873-Travel_and_hospitali-TR634k6ueiIXkNnwz6TizHDNMRFXkk.mp4",
+    "thumbnail": "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1280&h=720&fit=crop",
+    "description": "",
+    "tags": [],
+    "createdAt": "2026-01-12T14:00:44.817Z"
+  },
+  {
+    "id": 5,
+    "title": "Education",
+    "category": "Education and Wellness",
+    "videoUrl": "https://1l82oc3jiermhald.public.blob.vercel-storage.com/videos/1768226701021-Education_and_wellne-ms4sqpnKG6PrCASSHiqxvaEWH6jWXD.mp4",
+    "thumbnail": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=1280&h=720&fit=crop",
+    "description": "",
+    "tags": [],
+    "createdAt": "2026-01-12T14:05:27.476Z"
   }
 ]
