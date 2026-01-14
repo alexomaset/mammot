@@ -58,5 +58,75 @@
     "description": "",
     "tags": [],
     "createdAt": "2026-01-12T14:11:38.626Z"
+  },
+  {
+    "id": 7,
+    "title": "Lifestyle",
+    "category": "Lifestyle",
+    "videoUrl": "https://1l82oc3jiermhald.public.blob.vercel-storage.com/videos/1768411937071-Lifestyle__1__mp4-RmYbH2mNt62SAGZ2ddlumBkAIcrxdD.mp4",
+    "thumbnail": "/images/newthumbnails/lifestyle.JPG",
+    "description": "",
+    "tags": [],
+    "createdAt": "2026-01-14T17:32:38.288Z"
+  },
+  {
+    "id": 8,
+    "title": "Travel",
+    "category": "Travel and Hospitality",
+    "videoUrl": "https://1l82oc3jiermhald.public.blob.vercel-storage.com/videos/1768412591744-Travel_and_Hospitali-RvmLW1jMtkSzn7kwaEMnck25WgQNNO.mp4",
+    "thumbnail": "/images/newthumbnails/travel.JPG",
+    "description": "",
+    "tags": [],
+    "createdAt": "2026-01-14T17:45:26.759Z"
+  },
+  {
+    "id": 9,
+    "title": "Travel Casa",
+    "category": "Travel and Hospitality",
+    "videoUrl": "https://1l82oc3jiermhald.public.blob.vercel-storage.com/videos/1768412942896-Travel_and_hospitali-UEIrjbLe4KWGFcjoDgGuk6HDzqPZMX.mp4",
+    "thumbnail": "/images/newthumbnails/travel.JPG",
+    "description": "",
+    "tags": [],
+    "createdAt": "2026-01-14T17:49:39.554Z"
+  },
+  {
+    "id": 10,
+    "title": "Lifestyle",
+    "category": "Lifestyle",
+    "videoUrl": "https://1l82oc3jiermhald.public.blob.vercel-storage.com/videos/1768412989069-Lifestyle__4__mp4-0I4cRYaUnkUV8mkoE61wGkTonhJUeZ.mp4",
+    "thumbnail": "/images/newthumbnails/lifestyle.JPG",
+    "description": "",
+    "tags": [],
+    "createdAt": "2026-01-14T17:50:04.763Z"
+  },
+  {
+    "id": 11,
+    "title": "Events",
+    "category": "Events",
+    "videoUrl": "https://1l82oc3jiermhald.public.blob.vercel-storage.com/videos/1768413182762-Events__8__mp4-WdKhT4xDVltTSi8VNbeVae1XNCQxDe.mp4",
+    "thumbnail": "/images/newthumbnails/event.JPG",
+    "description": "",
+    "tags": [],
+    "createdAt": "2026-01-14T17:53:30.667Z"
+  },
+  {
+    "id": 12,
+    "title": "Events",
+    "category": "Events",
+    "videoUrl": "https://1l82oc3jiermhald.public.blob.vercel-storage.com/videos/1768413220627-Events__7__mp4-6895ALOof6MdVeQdw74K3Jd4zHhza1.mp4",
+    "thumbnail": "/images/newthumbnails/event.JPG",
+    "description": "",
+    "tags": [],
+    "createdAt": "2026-01-14T17:53:55.956Z"
+  },
+  {
+    "id": 13,
+    "title": "Education",
+    "category": "Education and Wellness",
+    "videoUrl": "https://1l82oc3jiermhald.public.blob.vercel-storage.com/videos/1768413534876-copy_E5DBA3D0_0C82_4-dPEQwKC2wYlXB2vGyDoSfTHsUzGquq.mp4",
+    "thumbnail": "/images/newthumbnails/education.JPG",
+    "description": "",
+    "tags": [],
+    "createdAt": "2026-01-14T17:59:37.932Z"
   }
 ]
