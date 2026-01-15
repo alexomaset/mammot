@@ -10,16 +10,6 @@
     "createdAt": "2026-01-08T15:32:29.727Z"
   },
   {
-    "id": 2,
-    "title": "media",
-    "category": "Media and Brands",
-    "videoUrl": "https://1l82oc3jiermhald.public.blob.vercel-storage.com/videos/1767982366004-Lifestyle__3__mp4-NZTACyEiMptSaJyG6MxrK7zV4dfpGk.mp4",
-    "thumbnail": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1280&h=720&fit=crop",
-    "description": "",
-    "tags": [],
-    "createdAt": "2026-01-09T18:16:07.441Z"
-  },
-  {
     "id": 3,
     "title": "Wedding event",
     "category": "Events",
@@ -128,5 +118,15 @@
     "description": "",
     "tags": [],
     "createdAt": "2026-01-14T17:59:37.932Z"
+  },
+  {
+    "id": 14,
+    "title": "Lifestyle",
+    "category": "Lifestyle",
+    "videoUrl": "https://1l82oc3jiermhald.public.blob.vercel-storage.com/videos/1768463698671-Lifestyle__3__mp4-9W4cQTFUO1XxTiaDMfSwJfh6HGlMlA.mp4",
+    "thumbnail": "/images/newthumbnails/lifestyle.JPG",
+    "description": "",
+    "tags": [],
+    "createdAt": "2026-01-15T07:55:27.556Z"
   }
 ]
