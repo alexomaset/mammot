@@ -76,6 +76,7 @@ export default function AdminPortfolio() {
   
   // File input refs
   const videoInputRef = useRef<HTMLInputElement>(null)
+  const thumbnailInputRef = useRef<HTMLInputElement>(null)
 
   // Fetch portfolio items
   const fetchPortfolioItems = async () => {
@@ -237,7 +238,7 @@ export default function AdminPortfolio() {
     setEditingItem({
       ...editingItem,
       category: category,
-      thumbnail: selectedCategory?.thumbnail || ''
+      thumbnail: selectedCategory?.thumbnail || editingItem?.thumbnail || ''
     })
   }
 
@@ -370,11 +371,6 @@ export default function AdminPortfolio() {
                           </option>
                         ))}
                       </select>
-                      {editingItem?.category && (
-                        <p className="mt-1 text-xs text-gray-500">
-                          Thumbnail: {CATEGORIES.find(c => c.name === editingItem.category)?.thumbnail}
-                        </p>
-                      )}
                     </div>
                     
                     {/* Video Upload */}
@@ -455,19 +451,20 @@ export default function AdminPortfolio() {
                       </div>
                     </div>
                     
-                    {/* Thumbnail Preview (Auto-assigned based on category) */}
+                    {/* Thumbnail */}
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Thumbnail Preview
+                        Thumbnail
                       </label>
 
-                      <div className="space-y-2">
+                      <div className="space-y-3">
+                        {/* Current Thumbnail Preview */}
                         {editingItem?.thumbnail ? (
                           <div className="flex items-center gap-3">
                             <div className="h-20 w-32 bg-gray-200 rounded overflow-hidden border-2 border-gray-300">
                               <img
                                 src={editingItem.thumbnail}
-                                alt="Category Thumbnail"
+                                alt="Thumbnail"
                                 className="h-full w-full object-cover"
                                 onError={(e) => {
                                   e.currentTarget.src = 'https://via.placeholder.com/200x120?text=Thumbnail'
@@ -476,17 +473,74 @@ export default function AdminPortfolio() {
                             </div>
                             <div className="text-sm text-gray-600">
                               <FaImage className="inline mr-1" />
-                              Auto-assigned for "{editingItem.category}"
+                              {CATEGORIES.find(c => c.name === editingItem.category)?.thumbnail === editingItem.thumbnail
+                                ? `Default for "${editingItem.category}"`
+                                : 'Custom thumbnail'}
                             </div>
                           </div>
                         ) : (
                           <div className="p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 text-center">
                             <FaImage className="mx-auto text-gray-400 text-2xl mb-2" />
                             <p className="text-sm text-gray-500">
-                              Select a category to see the thumbnail
+                              Select a category to auto-assign a thumbnail
                             </p>
                           </div>
                         )}
+
+                        {/* Upload custom thumbnail to override */}
+                        <div className="flex flex-col gap-2">
+                          <p className="text-xs text-gray-500">Upload a custom thumbnail to override the default:</p>
+                          <div className="flex gap-2">
+                            <div className="relative">
+                              <input
+                                ref={thumbnailInputRef}
+                                type="file"
+                                className="sr-only"
+                                accept="image/*"
+                                onChange={(e) => handleFileUpload(e, 'image')}
+                                disabled={isUploading.image}
+                              />
+                              <button
+                                type="button"
+                                onClick={() => thumbnailInputRef.current?.click()}
+                                className="bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors flex items-center gap-1 text-sm"
+                                disabled={isUploading.image}
+                              >
+                                {isUploading.image ? <FaSpinner className="animate-spin" /> : <FaUpload />}
+                                Upload Image
+                              </button>
+                            </div>
+
+                            {/* Reset to default */}
+                            {editingItem?.category && CATEGORIES.find(c => c.name === editingItem.category)?.thumbnail !== editingItem?.thumbnail && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const cat = CATEGORIES.find(c => c.name === editingItem?.category)
+                                  if (cat) setEditingItem({...editingItem, thumbnail: cat.thumbnail})
+                                }}
+                                className="text-sm text-[#6D412A] hover:underline"
+                              >
+                                Reset to default
+                              </button>
+                            )}
+                          </div>
+
+                          {/* Upload Progress */}
+                          {isUploading.image && (
+                            <div className="w-full bg-gray-200 rounded-full h-2.5">
+                              <div
+                                className="bg-[#6D412A] h-2.5 rounded-full"
+                                style={{ width: `${uploadProgress.image}%` }}
+                              ></div>
+                            </div>
+                          )}
+
+                          {/* Upload Error */}
+                          {uploadError.image && (
+                            <p className="text-red-500 text-sm">{uploadError.image}</p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>

@@ -77,17 +77,6 @@ export default function Contact() {
   
   // Chatbot functionality
   useEffect(() => {
-    // Send welcome message when chatbot first opens
-    if (messages.length === 0) {
-      const welcomeMessage: ChatMessage = {
-        id: 1,
-        text: "Hi there! I'm Mamot, Muthusi's assistant. How can I help you today? I can provide information about our services, pricing, or answer any questions you might have.",
-        sender: 'bot',
-        timestamp: new Date()
-      }
-      setMessages([welcomeMessage])
-    }
-    
     // Auto-scroll to the latest message
     scrollToBottom()
   }, [messages])
@@ -115,27 +104,60 @@ export default function Contact() {
     setMessages([...messages, newUserMessage])
     setInputMessage('')
     
-    // Simulate bot response after a delay
-    setTimeout(() => {
-      const botResponses = [
-        "Thank you for your message! Muthusi will get back to you shortly.",
-        "I'd be happy to help with that. Could you provide more details?",
-        "That's a great question! Our services include photography, videography, and digital storytelling.",
-        "We specialize in capturing unforgettable moments and turning them into lasting memories.",
-        "Our team is available for bookings throughout Kenya and East Africa."
+    // Check if this is the first user message (no bot messages yet)
+    const hasBotMessages = messages.some(m => m.sender === 'bot')
+
+    if (!hasBotMessages) {
+      // Send the three welcome messages sequentially
+      const welcomeMessages: ChatMessage[] = [
+        {
+          id: messages.length + 2,
+          text: "Hi 👋🏽 Welcome to Mamot!\nWe're excited to hear from you and help you grow your brand through digital marketing solutions that actually work.",
+          sender: 'bot',
+          timestamp: new Date()
+        },
+        {
+          id: messages.length + 3,
+          text: "We're currently open for bookings across Kenya and East Africa, offering social media management, digital strategy, content creation, and brand growth support.",
+          sender: 'bot',
+          timestamp: new Date()
+        },
+        {
+          id: messages.length + 4,
+          text: "Please email us at mamotbymuthusi@gmail.com and our team will get back to you shortly. (Typically within 24hrs)",
+          sender: 'bot',
+          timestamp: new Date()
+        }
       ]
-      
-      const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)]
-      
-      const newBotMessage: ChatMessage = {
-        id: messages.length + 2,
-        text: randomResponse,
-        sender: 'bot',
-        timestamp: new Date()
-      }
-      
-      setMessages(prevMessages => [...prevMessages, newBotMessage])
-    }, 1000)
+
+      welcomeMessages.forEach((msg, index) => {
+        setTimeout(() => {
+          setMessages(prevMessages => [...prevMessages, msg])
+        }, (index + 1) * 1000)
+      })
+    } else {
+      // Regular bot response for subsequent messages
+      setTimeout(() => {
+        const botResponses = [
+          "Thank you for your message! Muthusi will get back to you shortly.",
+          "I'd be happy to help with that. Could you provide more details?",
+          "That's a great question! Our services include social media management, digital strategy, content creation, and brand growth support.",
+          "We specialize in helping brands grow through digital marketing solutions that actually work.",
+          "Our team is available for bookings throughout Kenya and East Africa."
+        ]
+
+        const randomResponse = botResponses[Math.floor(Math.random() * botResponses.length)]
+
+        const newBotMessage: ChatMessage = {
+          id: messages.length + 2,
+          text: randomResponse,
+          sender: 'bot',
+          timestamp: new Date()
+        }
+
+        setMessages(prevMessages => [...prevMessages, newBotMessage])
+      }, 1000)
+    }
   }
 
   return (

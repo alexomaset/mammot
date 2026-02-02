@@ -44,17 +44,18 @@ export default function Header() {
   }
 
   return (
-    <header className={`fixed w-full z-50 transition-all duration-500 ${
-      isScrolled 
-        ? 'bg-earth-light shadow-lg' 
-        : 'bg-gradient-to-b from-earth-bark/90 via-earth-brown/60 to-transparent backdrop-blur-sm'
-    }`}>
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-28">
+    <div className="fixed w-full z-50 px-4 md:px-8 pt-4">
+      <header className={`mx-auto max-w-7xl rounded-2xl transition-all duration-500 ${
+        isScrolled
+          ? 'bg-white/95 shadow-lg backdrop-blur-md'
+          : 'bg-white/90 shadow-md backdrop-blur-sm'
+      }`}>
+        <div className="px-6">
+          <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link href="/" className="relative w-72 h-24 transition-transform hover:scale-105">
             <Image
-              src={isScrolled ? "/logo.png" : "/logo.png"}
+              src="/logo.png"
               alt="MAMOT Digital Marketing"
               fill
               className="object-contain"
@@ -67,36 +68,28 @@ export default function Header() {
             <a 
               href="#home" 
               onClick={(e) => handleSmoothScroll(e, 'home')}
-              className={`font-medium text-lg hover:text-earth-terracotta transition-colors ${
-                isScrolled ? 'text-earth-brown' : 'text-earth-light'
-              }`}
+              className="font-medium text-lg text-earth-brown hover:text-earth-terracotta transition-colors"
             >
               Home
             </a>
-            <a 
-              href="#services" 
+            <a
+              href="#services"
               onClick={(e) => handleSmoothScroll(e, 'services')}
-              className={`font-medium text-lg hover:text-earth-terracotta transition-colors ${
-                isScrolled ? 'text-earth-brown' : 'text-earth-light'
-              }`}
+              className="font-medium text-lg text-earth-brown hover:text-earth-terracotta transition-colors"
             >
               Services
             </a>
-            <a 
-              href="#portfolio" 
+            <a
+              href="#portfolio"
               onClick={(e) => handleSmoothScroll(e, 'portfolio')}
-              className={`font-medium text-lg hover:text-earth-terracotta transition-colors ${
-                isScrolled ? 'text-earth-brown' : 'text-earth-light'
-              }`}
+              className="font-medium text-lg text-earth-brown hover:text-earth-terracotta transition-colors"
             >
               Portfolio
             </a>
-            <a 
-              href="#contact" 
+            <a
+              href="#contact"
               onClick={(e) => handleSmoothScroll(e, 'contact')}
-              className={`font-medium text-lg hover:text-earth-terracotta transition-colors ${
-                isScrolled ? 'text-earth-brown' : 'text-earth-light'
-              }`}
+              className="font-medium text-lg text-earth-brown hover:text-earth-terracotta transition-colors"
             >
               Contact
             </a>
@@ -110,7 +103,7 @@ export default function Header() {
 
           {/* Mobile Menu Button */}
           <button
-            className={`md:hidden ${isScrolled ? 'text-earth-brown' : 'text-earth-light'}`}
+            className="md:hidden text-earth-brown"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             <svg
@@ -177,7 +170,8 @@ export default function Header() {
             </div>
           </nav>
         </motion.div>
-      </div>
-    </header>
+        </div>
+      </header>
+    </div>
   )
 }
