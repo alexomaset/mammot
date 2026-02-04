@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { FaInstagram, FaTiktok } from 'react-icons/fa'
+import { FaInstagram } from 'react-icons/fa'
 
 export default function Footer() {
   return (
@@ -21,9 +21,6 @@ export default function Footer() {
               Transforming businesses through innovative digital marketing solutions.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-earth-sand hover:text-earth-terracotta transition-colors">
-                <FaTiktok size={20} />
-              </a>
               <a href="https://www.instagram.com/mamot_by_muthusi?igsh=MTR0N2N1YTN6aHd2dQ%3D%3D&utm_source=qr" className="text-earth-sand hover:text-earth-terracotta transition-colors">
                 <FaInstagram size={20} />
               </a>
@@ -34,11 +31,6 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Our Services</h3>
             <ul className="space-y-2">
-              <li>
-                <Link href="/services#seo" className="text-earth-sand hover:text-earth-terracotta transition-colors">
-                Influencer Marketing Strategy
-                </Link>
-              </li>
               <li>
                 <Link href="/services#social" className="text-gray-400 hover:text-white transition-colors">
                 Social Media Management
