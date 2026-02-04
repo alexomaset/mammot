@@ -3,7 +3,6 @@ import Hero from '@/app/components/home/Hero';
 import Services from '@/app/components/home/Services';
 import FeaturedWork from '@/app/components/home/FeaturedWork';
 import Testimonials from '@/app/components/home/Testimonials'
-import CallToAction from '@/app/components/home/CallToAction'
 import Portfolio from './components/home/Portfolio'
 import Contact from './components/home/Contact'
 import Brands from './components/home/Brands'
@@ -21,7 +20,6 @@ export default function Home() {
       <Brands />
       <Services />
       {/* <Testimonials /> */}
-      <CallToAction />
       <Contact />
     </main>
   )
