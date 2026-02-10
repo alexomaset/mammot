@@ -1,4 +1,4 @@
-import { sql } from '@vercel/postgres';
+import postgres from 'postgres';
 import * as FileStorage from './file-storage';
 
 // Smart environment detection
@@ -11,19 +11,24 @@ console.log('- Environment:', process.env.NODE_ENV);
 console.log('- Postgres available:', hasPostgresConfig);
 console.log('- Using file storage:', useFileStorage);
 
+// Create postgres connection (only if we have config)
+const sql = hasPostgresConfig
+  ? postgres(process.env.POSTGRES_URL!, { ssl: 'require' })
+  : null;
+
 // Schema definition
 export async function initializeDatabase() {
-  // Development fallback if no database is configured
   if (isDevelopment && !hasPostgresConfig) {
     console.log('🧠 Using in-memory data storage as fallback');
     return true;
   }
 
-  // Skip database initialization if using file storage
   if (useFileStorage) {
     console.log('📁 Using file storage, skipping database initialization');
     return true;
   }
+
+  if (!sql) return false;
 
   try {
     // Test database connection with timeout
@@ -32,7 +37,6 @@ export async function initializeDatabase() {
     });
 
     const connectionTest = sql`SELECT 1 as test`;
-    
     await Promise.race([connectionTest, timeoutPromise]);
 
     // Create the portfolio_items table if it doesn't exist
@@ -49,7 +53,7 @@ export async function initializeDatabase() {
         updated_at TIMESTAMP
       );
     `;
-    
+
     console.log('✅ Database initialized successfully');
     return true;
   } catch (error) {
@@ -95,35 +99,33 @@ export function rowToPortfolioItem(row: any): PortfolioItem {
     thumbnail: row.thumbnail,
     description: row.description || '',
     tags: row.tags || [],
-    createdAt: row.created_at?.toISOString(),
-    updatedAt: row.updated_at?.toISOString(),
+    createdAt: row.created_at?.toISOString?.() || row.created_at,
+    updatedAt: row.updated_at?.toISOString?.() || row.updated_at,
   };
 }
 
 // Get all portfolio items
 export async function getPortfolioItems(): Promise<PortfolioItem[]> {
   try {
-    // Use file storage if enabled
     if (useFileStorage) {
       return await FileStorage.getPortfolioItems();
     }
-    
-    // Use in-memory data in development if no DB is configured
+
     if (isDevelopment && !hasPostgresConfig) {
       return [...inMemoryData];
     }
 
+    if (!sql) return [];
     const result = await sql`SELECT * FROM portfolio_items ORDER BY id DESC`;
-    return result.rows.map(rowToPortfolioItem);
+    return result.map(rowToPortfolioItem);
   } catch (error) {
     console.error('Error fetching portfolio items:', error);
-    
-    // Fallback to file storage on database error
+
     if (!useFileStorage) {
       console.log('🔄 Falling back to file storage due to database error');
       return await FileStorage.getPortfolioItems();
     }
-    
+
     return isDevelopment && !hasPostgresConfig ? [...inMemoryData] : [];
   }
 }
@@ -131,26 +133,24 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
 // Get portfolio item by ID
 export async function getPortfolioItemById(id: number): Promise<PortfolioItem | null> {
   try {
-    // Use file storage if enabled
     if (useFileStorage) {
       return await FileStorage.getPortfolioItemById(id);
     }
 
-    // Use in-memory data in development if no DB is configured
     if (isDevelopment && !hasPostgresConfig) {
       const item = inMemoryData.find(item => item.id === id);
       return item || null;
     }
 
+    if (!sql) return null;
     const result = await sql`SELECT * FROM portfolio_items WHERE id = ${id}`;
-    if (result.rows.length === 0) {
+    if (result.length === 0) {
       return null;
     }
-    return rowToPortfolioItem(result.rows[0]);
+    return rowToPortfolioItem(result[0]);
   } catch (error) {
     console.error(`Error fetching portfolio item with id ${id}:`, error);
-    
-    // Fallback to file storage if DB fails
+
     if (!useFileStorage) {
       console.log('🔄 Falling back to file storage for getById operation');
       try {
@@ -159,7 +159,7 @@ export async function getPortfolioItemById(id: number): Promise<PortfolioItem | 
         console.error('File storage fallback also failed:', fallbackError);
       }
     }
-    
+
     return null;
   }
 }
@@ -167,56 +167,54 @@ export async function getPortfolioItemById(id: number): Promise<PortfolioItem | 
 // Create a new portfolio item
 export async function createPortfolioItem(item: Omit<PortfolioItem, 'id'>): Promise<PortfolioItem | null> {
   try {
-    // Use file storage if enabled
     if (useFileStorage) {
       return await FileStorage.createPortfolioItem(item);
     }
-    
-    // Use in-memory data in development if no DB is configured
+
     if (isDevelopment && !hasPostgresConfig) {
-      const newId = inMemoryData.length > 0 
-        ? Math.max(...inMemoryData.map(item => item.id)) + 1 
+      const newId = inMemoryData.length > 0
+        ? Math.max(...inMemoryData.map(item => item.id)) + 1
         : 1;
-      
+
       const newItem: PortfolioItem = {
         id: newId,
         ...item,
       };
-      
+
       inMemoryData.push(newItem);
       return newItem;
     }
 
-    // For SQL query, convert tags array to a PostgreSQL compatible format
-    const tagsParam = item.tags && item.tags.length > 0 
-      ? `{${item.tags.join(',')}}` 
-      : '{}';
+    if (!sql) return null;
+
+    const tagsParam = item.tags && item.tags.length > 0
+      ? item.tags
+      : [];
 
     const result = await sql`
       INSERT INTO portfolio_items (
         title, category, video_url, thumbnail, description, tags, created_at
       ) VALUES (
-        ${item.title}, 
-        ${item.category}, 
-        ${item.videoUrl}, 
-        ${item.thumbnail}, 
-        ${item.description || ''}, 
-        ${tagsParam}::text[], 
+        ${item.title},
+        ${item.category},
+        ${item.videoUrl},
+        ${item.thumbnail},
+        ${item.description || ''},
+        ${tagsParam},
         CURRENT_TIMESTAMP
       )
       RETURNING *
     `;
-    
-    return rowToPortfolioItem(result.rows[0]);
+
+    return rowToPortfolioItem(result[0]);
   } catch (error) {
     console.error('Error creating portfolio item:', error);
-    
-    // Fallback to file storage on database error
+
     if (!useFileStorage) {
       console.log('🔄 Falling back to file storage due to database error');
       return await FileStorage.createPortfolioItem(item);
     }
-    
+
     return null;
   }
 }
@@ -224,7 +222,6 @@ export async function createPortfolioItem(item: Omit<PortfolioItem, 'id'>): Prom
 // Update a portfolio item
 export async function updatePortfolioItem(id: number, item: Partial<PortfolioItem>): Promise<PortfolioItem | null> {
   try {
-    // Use in-memory data in development if no DB is configured
     if (isDevelopment && !hasPostgresConfig) {
       const index = inMemoryData.findIndex(item => item.id === id);
       if (index === -1) return null;
@@ -243,25 +240,24 @@ export async function updatePortfolioItem(id: number, item: Partial<PortfolioIte
       return inMemoryData[index];
     }
 
-    // Use file storage if enabled
     if (useFileStorage) {
       return await FileStorage.updatePortfolioItem(id, item);
     }
+
+    if (!sql) return null;
 
     // Get the existing item
     const existingItem = await getPortfolioItemById(id);
     if (!existingItem) {
       return null;
     }
-    
-    // For SQL query, convert tags array to a PostgreSQL compatible format
-    const tagsParam = item.tags && item.tags.length > 0 
-      ? `{${item.tags.join(',')}}` 
-      : existingItem.tags && existingItem.tags.length > 0 
-        ? `{${existingItem.tags.join(',')}}` 
-        : '{}';
-    
-    // Update the item
+
+    const tagsParam = item.tags && item.tags.length > 0
+      ? item.tags
+      : existingItem.tags && existingItem.tags.length > 0
+        ? existingItem.tags
+        : [];
+
     const result = await sql`
       UPDATE portfolio_items SET
         title = ${item.title || existingItem.title},
@@ -269,17 +265,16 @@ export async function updatePortfolioItem(id: number, item: Partial<PortfolioIte
         video_url = ${item.videoUrl || existingItem.videoUrl},
         thumbnail = ${item.thumbnail || existingItem.thumbnail},
         description = ${item.description !== undefined ? item.description : existingItem.description},
-        tags = ${tagsParam}::text[],
+        tags = ${tagsParam},
         updated_at = CURRENT_TIMESTAMP
       WHERE id = ${id}
       RETURNING *
     `;
-    
-    return rowToPortfolioItem(result.rows[0]);
+
+    return rowToPortfolioItem(result[0]);
   } catch (error) {
     console.error(`Error updating portfolio item with id ${id}:`, error);
 
-    // Fallback to file storage if DB fails
     if (!useFileStorage) {
       console.log('🔄 Falling back to file storage for update operation');
       try {
@@ -296,12 +291,10 @@ export async function updatePortfolioItem(id: number, item: Partial<PortfolioIte
 // Delete a portfolio item
 export async function deletePortfolioItem(id: number): Promise<boolean> {
   try {
-    // Use file storage if enabled
     if (useFileStorage) {
       return await FileStorage.deletePortfolioItem(id);
     }
 
-    // Use in-memory data in development if no DB is configured
     if (isDevelopment && !hasPostgresConfig) {
       const initialLength = inMemoryData.length;
       const newItems = inMemoryData.filter(item => item.id !== id);
@@ -310,13 +303,13 @@ export async function deletePortfolioItem(id: number): Promise<boolean> {
       return initialLength > inMemoryData.length;
     }
 
-    // Try database first
+    if (!sql) return false;
+
     const result = await sql`DELETE FROM portfolio_items WHERE id = ${id}`;
-    return result.rowCount ? result.rowCount > 0 : false;
+    return result.count > 0;
   } catch (error) {
     console.error(`Error deleting portfolio item with id ${id}:`, error);
-    
-    // Fallback to file storage if DB fails
+
     if (!useFileStorage) {
       console.log('🔄 Falling back to file storage for delete operation');
       try {
@@ -325,7 +318,7 @@ export async function deletePortfolioItem(id: number): Promise<boolean> {
         console.error('File storage fallback also failed:', fallbackError);
       }
     }
-    
+
     return false;
   }
 }
