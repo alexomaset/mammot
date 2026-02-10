@@ -101,12 +101,13 @@
   },
   {
     "id": 14,
-    "title": "Lifestyle",
+    "title": "Lifestylw",
     "category": "Lifestyle",
     "videoUrl": "https://1l82oc3jiermhald.public.blob.vercel-storage.com/videos/1768463698671-Lifestyle__3__mp4-9W4cQTFUO1XxTiaDMfSwJfh6HGlMlA.mp4",
     "thumbnail": "/images/newthumbnails/lifestyle.JPG",
     "description": "",
     "tags": [],
-    "createdAt": "2026-01-15T07:55:27.556Z"
+    "createdAt": "2026-01-15T07:55:27.556Z",
+    "updatedAt": "2026-02-10T05:11:44.827Z"
   }
 ]

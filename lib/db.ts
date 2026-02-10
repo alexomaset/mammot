@@ -228,7 +228,7 @@ export async function updatePortfolioItem(id: number, item: Partial<PortfolioIte
     if (isDevelopment && !hasPostgresConfig) {
       const index = inMemoryData.findIndex(item => item.id === id);
       if (index === -1) return null;
-      
+
       inMemoryData[index] = {
         ...inMemoryData[index],
         ...item,
@@ -239,8 +239,13 @@ export async function updatePortfolioItem(id: number, item: Partial<PortfolioIte
         description: item.description !== undefined ? item.description : inMemoryData[index].description,
         tags: item.tags || inMemoryData[index].tags,
       };
-      
+
       return inMemoryData[index];
+    }
+
+    // Use file storage if enabled
+    if (useFileStorage) {
+      return await FileStorage.updatePortfolioItem(id, item);
     }
 
     // Get the existing item
@@ -273,6 +278,17 @@ export async function updatePortfolioItem(id: number, item: Partial<PortfolioIte
     return rowToPortfolioItem(result.rows[0]);
   } catch (error) {
     console.error(`Error updating portfolio item with id ${id}:`, error);
+
+    // Fallback to file storage if DB fails
+    if (!useFileStorage) {
+      console.log('🔄 Falling back to file storage for update operation');
+      try {
+        return await FileStorage.updatePortfolioItem(id, item);
+      } catch (fileError) {
+        console.error('File storage fallback also failed:', fileError);
+      }
+    }
+
     return null;
   }
 }
