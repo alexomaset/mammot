@@ -9,7 +9,7 @@ const contactInfo = [
     icon: <FaPhone className="w-6 h-6" />,
     title: "Phone",
     content: "+254 713 370 840",
-    link: "tel:+254712345678"
+    link: "tel:+254713370840"
   },
   {
     icon: <FaEnvelope className="w-6 h-6" />,
