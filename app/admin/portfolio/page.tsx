@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { FaPlus, FaEdit, FaTrash, FaEye, FaUpload, FaTimes, FaCheck, FaSpinner, FaVideo, FaImage } from 'react-icons/fa'
-import { upload } from '@vercel/blob/client'
 
 interface PortfolioItem {
   id: number
@@ -118,23 +117,46 @@ export default function AdminPortfolio() {
       const timestamp = Date.now()
       const fileExt = file.name.split('.').pop()?.toLowerCase() || ''
       const fileNameBase = file.name.substring(0, 20).replace(/[^a-zA-Z0-9]/g, '_')
-      const filename = `${type}s/${timestamp}-${fileNameBase}.${fileExt}`
+      const filename = `${timestamp}-${fileNameBase}.${fileExt}`
 
-      // Upload directly to Vercel Blob using client-side upload
-      const blob = await upload(filename, file, {
-        access: 'public',
-        handleUploadUrl: '/api/upload-url',
-        onUploadProgress: (progress) => {
-          const percentage = Math.round((progress.loaded / progress.total) * 100)
-          setUploadProgress(prev => ({ ...prev, [type]: percentage }))
-        },
+      // Ask the server for a Supabase signed upload URL
+      const urlResponse = await fetch('/api/upload-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename, type, contentType: file.type }),
+      })
+
+      if (!urlResponse.ok) {
+        const err = await urlResponse.json().catch(() => ({}))
+        throw new Error(err.error || 'Failed to get upload URL')
+      }
+
+      const { signedUrl, publicUrl } = await urlResponse.json()
+
+      // Upload directly to Supabase Storage with progress tracking
+      await new Promise<void>((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+        xhr.open('PUT', signedUrl)
+        xhr.setRequestHeader('Content-Type', file.type)
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percentage = Math.round((event.loaded / event.total) * 100)
+            setUploadProgress(prev => ({ ...prev, [type]: percentage }))
+          }
+        }
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) resolve()
+          else reject(new Error(`Upload failed with status ${xhr.status}`))
+        }
+        xhr.onerror = () => reject(new Error('Upload failed. Please check your connection.'))
+        xhr.send(file)
       })
 
       // Update the form with the uploaded file URL
       if (type === 'video') {
-        setEditingItem(prev => prev ? { ...prev, videoUrl: blob.url } : null)
+        setEditingItem(prev => prev ? { ...prev, videoUrl: publicUrl } : null)
       } else {
-        setEditingItem(prev => prev ? { ...prev, thumbnail: blob.url } : null)
+        setEditingItem(prev => prev ? { ...prev, thumbnail: publicUrl } : null)
       }
 
       // Reset upload state

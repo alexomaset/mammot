@@ -3,7 +3,12 @@ import * as FileStorage from './file-storage';
 
 // Smart environment detection
 const isDevelopment = process.env.NODE_ENV === 'development';
-const hasPostgresConfig = !!(process.env.POSTGRES_URL || process.env.POSTGRES_PRISMA_URL);
+const connectionString =
+  process.env.POSTGRES_URL ||
+  process.env.STORAGE_POSTGRES_URL ||
+  process.env.POSTGRES_PRISMA_URL ||
+  process.env.STORAGE_POSTGRES_PRISMA_URL;
+const hasPostgresConfig = !!connectionString;
 const useFileStorage = process.env.USE_FILE_STORAGE === 'true' || (!hasPostgresConfig && isDevelopment);
 
 console.log('🔄 Database Configuration:');
@@ -12,8 +17,9 @@ console.log('- Postgres available:', hasPostgresConfig);
 console.log('- Using file storage:', useFileStorage);
 
 // Create postgres connection (only if we have config)
+// prepare: false is required for Supabase's transaction pooler (pgbouncer, port 6543)
 const sql = hasPostgresConfig
-  ? postgres(process.env.POSTGRES_URL!, { ssl: 'require' })
+  ? postgres(connectionString!, { ssl: 'require', prepare: false })
   : null;
 
 // Schema definition
